@@ -1,13 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Home from "./pages/Home/Home";
 import Game from "./pages/Game/Game";
 
+import configureStore from './store/store';
+import { defaultGlobalState } from "./models/reducers";
+
 import "./index.css";
 
 import reportWebVitals from "./reportWebVitals";
+
+const store = configureStore(defaultGlobalState);
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -30,7 +36,9 @@ const router = createBrowserRouter([
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );
 
