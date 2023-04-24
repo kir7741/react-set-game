@@ -7,7 +7,7 @@ export const defaultGlobalState: GlobalState = {
 
 }
 
-const reducers = combineReducers<GlobalState>( {
+const reducers = combineReducers<GlobalState>({
 
 });
 
