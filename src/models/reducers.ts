@@ -5,7 +5,7 @@ export interface GlobalState {
 
 export const defaultGlobalState: GlobalState = {
 
-}
+};
 
 const reducers = combineReducers<GlobalState>({
 
