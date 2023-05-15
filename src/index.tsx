@@ -1,43 +1,57 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { Provider } from "react-redux";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { Provider, useDispatch } from 'react-redux';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import Home from "./pages/Home/Home";
-import Game from "./pages/Game/Game";
+import Home from './pages/Home/Home';
+import Game from './pages/Game/Game';
 
 import configureStore from './store/store';
-import { defaultGlobalState } from "./models/reducers";
+import { defaultGlobalState } from './models/reducers';
 
-import "./index.css";
+import './index.css';
 
-import reportWebVitals from "./reportWebVitals";
+import reportWebVitals from './reportWebVitals';
+import { setPlayer } from './models/player';
+import { Dispatch } from 'redux';
 
 const store = configureStore(defaultGlobalState);
 
+const homeLoader = (dispatch: Dispatch) => () => {
+  dispatch(setPlayer(''));
+  return null;
+}
+
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
+  document.getElementById('root') as HTMLElement
 );
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "game",
-    element: <Game />,
-  },
-  {
-    path: "score",
-    element: <div>score</div>,
-  },
-]);
+const Router: React.FC = () => {
+  const dispatch = useDispatch();
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <Home />,
+      loader: homeLoader(dispatch)
+    },
+    {
+      path: 'game',
+      element: <Game />,
+    },
+    {
+      path: 'score',
+      element: <div>score</div>,
+    },
+  ]);
+
+  return <RouterProvider router={router} />
+
+}
 
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <Router />
     </Provider>
   </React.StrictMode>
 );

@@ -1,7 +1,6 @@
 import { CardInfo } from "./card-info.interface";
 
 /**
-import { CardInfo } from './card-info.interface';
  *  玩家資料介面
  *
  * @export
@@ -44,9 +43,9 @@ export interface PlayerInfo {
   /**
    * 持有牌
    *
-   * @type {CardInfo}
+   * @type {CardInfo[]}
    * @memberof PlayerInfo
    */
-  cards: CardInfo;
+  cards: CardInfo[];
 
 }
