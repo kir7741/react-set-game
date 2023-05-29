@@ -12,13 +12,13 @@ import { defaultGlobalState } from './models/reducers';
 import './index.css';
 
 import reportWebVitals from './reportWebVitals';
-import { setPlayer } from './models/player';
+import { initialPlayer } from './models/player';
 import { Dispatch } from 'redux';
 
 const store = configureStore(defaultGlobalState);
 
 const homeLoader = (dispatch: Dispatch) => () => {
-  dispatch(setPlayer(''));
+  dispatch(initialPlayer(''));
   return null;
 }
 

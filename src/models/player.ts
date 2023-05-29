@@ -4,6 +4,7 @@ import { GlobalState } from './reducers';
 
 // Interfaces
 import { PlayerInfo } from '../interface/player-info.interface';
+import { Dispatch } from 'redux';
 
 export interface State {
 
@@ -11,7 +12,7 @@ export interface State {
 
 }
 
-export const addPlayer = createAction('ADD_PLAYER', (playerName: string) => {
+const addPlayer = createAction('ADD_PLAYER', (playerName: string) => {
   const playerInfo: PlayerInfo = {
     id: Math.random() + '',
     name: playerName,
@@ -20,9 +21,9 @@ export const addPlayer = createAction('ADD_PLAYER', (playerName: string) => {
     cards: []
   }
   return [playerInfo];
-})
+});
 
-export const setPlayer = createAction('SET_PLAYER', (playerName: string) => {
+export const initialPlayer = createAction('INITINAL_PLAYER', (playerName: string) => {
   const playerInfo: PlayerInfo = {
     id: Math.random() + '',
     name: playerName,
@@ -31,10 +32,42 @@ export const setPlayer = createAction('SET_PLAYER', (playerName: string) => {
     cards: []
   }
   return [playerInfo];
-})
+});
+
+const removePlayer = createAction('REMOVE_PLAYER', (playerId: string) => playerId);
+
+const setPlayer = createAction('SET_PLAYER', (info: Partial<PlayerInfo>) => (dispatch: Dispatch, getState: () => GlobalState)  => {
+  
+  const {
+    player: {
+      playerList: list
+    }
+  } = getState();
+
+  const prePlayerIndex = list.findIndex((oldPlayerInfo) => oldPlayerInfo.id === info.id);
+  const prePlayer = list[prePlayerIndex];
+
+  if (!prePlayer) {
+    return list;
+  }
+
+  const hasKey = (key: string) => info.hasOwnProperty(key);
+
+  const newPlayer: PlayerInfo = {
+    id: prePlayer.id,
+    name: hasKey('name') ? (info.name || '') : prePlayer.name,
+    score: hasKey('score') ? (info.score || 0) : prePlayer.score,
+    playingStatus: hasKey('playingStatus') ? (info.playingStatus || false) : prePlayer.playingStatus,
+    cards: hasKey('cards') ? (info.cards || []) : prePlayer.cards
+  }
+
+  list[prePlayerIndex] = newPlayer;
+
+  return list.concat();
+});
 
 export const defaultState: State = {
-	playerList: []
+  playerList: []
 };
 
 export const reducer = {
@@ -42,33 +75,49 @@ export const reducer = {
     {
       ADD_PLAYER: (state: State, action: Action<PlayerInfo[]>) => {
         return {
-          ...state, 
+          ...state,
           playerList: [...state.playerList, ...action.payload]
         }
       },
-      SET_PLAYER: (state: State, action: Action<PlayerInfo[]>) => {
+      INITINAL_PLAYER: (state: State, action: Action<PlayerInfo[]>) => {
         return {
-          ...state, 
+          ...state,
           playerList: [...action.payload]
         }
       },
+      REMOVE_PLAYER: (state: State, action: Action<string>) => {
+        return {
+          ...state,
+          playerList: state.playerList.filter((info) => info.id !== action.payload)
+        }
+      },
+      SET_PLAYER: (state: State, action: Action<PlayerInfo[]>) => {
+        console.log('SET_PLAYER')
+        console.log(action.payload)
+        return {
+          ...state,
+          playerList: [...action.payload]
+        }
+      }
 
     },
     defaultState
   )
-}
+};
 
 const playerSelector = (state: GlobalState) => ({
-	playerList: state.player.playerList
+  playerList: state.player.playerList
 });
 
 const playerActionMap = {
   addPlayer,
+  initialPlayer,
+  removePlayer,
   setPlayer
-}
+};
 
 type PlayerSelector = ReturnType<typeof playerSelector>;
 type PlayerActionMap = typeof playerActionMap;
 
 export const usePlayer = () =>
-	useRedux<PlayerSelector, PlayerActionMap>(playerSelector, playerActionMap);
+  useRedux<PlayerSelector, PlayerActionMap>(playerSelector, playerActionMap);
