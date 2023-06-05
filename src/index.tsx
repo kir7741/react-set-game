@@ -18,7 +18,7 @@ import { Dispatch } from 'redux';
 const store = configureStore(defaultGlobalState);
 
 const homeLoader = (dispatch: Dispatch) => () => {
-  dispatch(initialPlayer(''));
+  dispatch(initialPlayer());
   return null;
 }
 
