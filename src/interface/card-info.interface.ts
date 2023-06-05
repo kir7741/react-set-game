@@ -6,7 +6,7 @@ import { FillType } from "../enum/fill-type.enum";
 import { ShapeType } from "../enum/shape-type.enum";
 
 /**
- *  玩家資料介面
+ * 卡片資料介面
  *
  * @export
  * @interface CardInfo

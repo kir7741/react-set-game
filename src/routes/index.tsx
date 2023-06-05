@@ -1,15 +1,21 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Dispatch } from 'redux';
 
 import Home from '../pages/Home/Home';
 import Game from '../pages/Game/Game';
 
-import { Dispatch } from 'redux';
 import { initialPlayer } from '../models/player';
+import { initialPileOfCards } from '../models/game';
 
-const homeLoader = (dispatch: Dispatch) => () => {
+const homeInitLoader = (dispatch: Dispatch) => () => {
 	dispatch(initialPlayer());
+	return null;
+};
+
+const gameInitLoader = (dispatch: Dispatch) => () => {
+  dispatch(initialPileOfCards());
 	return null;
 };
 
@@ -19,11 +25,12 @@ const Router: React.FC = () => {
 		{
 			path: '/',
 			element: <Home />,
-			loader: homeLoader(dispatch),
+			loader: homeInitLoader(dispatch),
 		},
 		{
 			path: 'game',
 			element: <Game />,
+			loader: gameInitLoader(dispatch),
 		},
 		{
 			path: 'score',
