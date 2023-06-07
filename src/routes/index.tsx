@@ -7,7 +7,7 @@ import Home from '../pages/Home/Home';
 import Game from '../pages/Game/Game';
 
 import { initialPlayer } from '../models/player';
-import { initialPileOfCards } from '../models/game';
+import { initialPileOfCards, dealCard } from '../models/game';
 
 const homeInitLoader = (dispatch: Dispatch) => () => {
 	dispatch(initialPlayer());
@@ -16,6 +16,7 @@ const homeInitLoader = (dispatch: Dispatch) => () => {
 
 const gameInitLoader = (dispatch: Dispatch) => () => {
   dispatch(initialPileOfCards());
+  dispatch(dealCard());
 	return null;
 };
 

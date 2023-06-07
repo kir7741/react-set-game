@@ -14,6 +14,14 @@ import { ShapeType } from "../enum/shape-type.enum";
 export interface CardInfo {
 
   /**
+   * 流水號
+   *
+   * @type {string}
+   * @memberof CardInfo
+   */
+  id: string
+
+  /**
    * 數量
    *
    * @type {AmountType}
