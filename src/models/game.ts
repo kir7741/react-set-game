@@ -9,6 +9,7 @@ import { ColorType } from '../enum/color-type.enum';
 import { FillType } from '../enum/fill-type.enum';
 import { ShapeType } from '../enum/shape-type.enum';
 import { CardStatusType } from '../enum/card-status-type.enum';
+import { checkSet } from '../util/helper/check-set';
 
 export interface State {
 
@@ -34,6 +35,9 @@ export const defaultState: State = {
 	cardsOfDeck: [],
 };
 
+/**
+ * 初始化排堆並洗牌
+ */
 export const initialPileOfCards = createAction('INITIAL_PILE_OF_CARDS', () => {
 	const amountList = [AmountType.ONE, AmountType.TWO, AmountType.THREE];
 	const colorList = [ColorType.RED, ColorType.GREEN, ColorType.BLUE];
@@ -70,6 +74,9 @@ export const initialPileOfCards = createAction('INITIAL_PILE_OF_CARDS', () => {
 	return pileOfCards;
 });
 
+/**
+ * 發牌，發12張 + 判斷 是否有 set 後補排
+ */
 export const dealCard = createAction('DEAL_THE_CARD', () => (_: Dispatch, getState: () => GlobalState) => {
 
 	const {
@@ -81,20 +88,63 @@ export const dealCard = createAction('DEAL_THE_CARD', () => (_: Dispatch, getSta
 
 	const amtOfCardOfDeck = cardsOfDeck.length;
 	let returnPileOfCards = [...pileOfCards];
-	let returnCardOfDeck = [];
+	let returnCardOfDeck = [...cardsOfDeck];
 
 	// 補到12張
 	if (amtOfCardOfDeck < 12) {
 		for (let i = 0; i < 12 - amtOfCardOfDeck; i++) {
 			const card = returnPileOfCards.shift();
 			if (card) {
-				returnCardOfDeck.push(card)
+				returnCardOfDeck.push(card);
 			}
 		}
-		console.log('returnPileOfCards', returnPileOfCards.length)
-		// 確認是否有set
-	} else if (false) {
+	} 
 
+	const selectedCards: CardInfo[] = [];
+	let isFoundSet = false;
+	const check = (checkSelectedCards: CardInfo[], index: number) => {
+
+		if (isFoundSet) {
+			return;
+		}
+		
+		if (checkSelectedCards.length === 3) {
+			isFoundSet = checkSet(checkSelectedCards);
+			return;
+		}
+
+		for(let i = index ; i < returnCardOfDeck.length; i++) {
+
+			if (!returnCardOfDeck[i]) {
+				break;
+			}
+			selectedCards.push(returnCardOfDeck[i]);
+			check(selectedCards, i + 1); 
+			selectedCards.pop();
+
+			if (isFoundSet) {
+				break;
+			}
+		}
+	}
+
+	check([], 0);
+	
+	// 確認是否有set
+	// 暫不考慮結束遊戲的情況
+	// 但後續開始玩之後確認是否可以正確執行補牌
+	// TODO: 7/10 開發搶答功能(預計以modal方式呈現) => 選卡片
+	while (
+		!isFoundSet &&
+		returnPileOfCards.length
+	) {
+		for (let i = 0; i < 3; i++) {
+			const card = returnPileOfCards.shift();
+			if (card) {
+				returnCardOfDeck.push(card);
+			}
+		}
+		check([], 0);
 	}
 
 	return {

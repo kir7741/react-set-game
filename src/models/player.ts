@@ -96,8 +96,6 @@ export const reducer = {
 				};
 			},
 			SET_PLAYER: (state: State, action: Action<PlayerInfo[]>) => {
-				console.log('SET_PLAYER');
-				console.log(action.payload);
 				return {
 					...state,
 					playerList: [...action.payload],

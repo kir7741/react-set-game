@@ -21,7 +21,6 @@ const Home = () => {
 					<Input
 						value={info.name}
 						onChangeValue={(val: string) => {
-							console.log('change');
 							setPlayer({
 								id: info.id,
 								name: val,
