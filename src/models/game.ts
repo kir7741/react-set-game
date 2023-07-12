@@ -12,7 +12,6 @@ import { CardStatusType } from '../enum/card-status-type.enum';
 import { checkSet } from '../util/helper/check-set';
 
 export interface State {
-
 	/**
 	 * 排堆卡片
 	 *
@@ -77,82 +76,75 @@ export const initialPileOfCards = createAction('INITIAL_PILE_OF_CARDS', () => {
 /**
  * 發牌，發12張 + 判斷 是否有 set 後補排
  */
-export const dealCard = createAction('DEAL_THE_CARD', () => (_: Dispatch, getState: () => GlobalState) => {
+export const dealCard = createAction(
+	'DEAL_THE_CARD',
+	() => (_: Dispatch, getState: () => GlobalState) => {
+		const {
+			game: { pileOfCards, cardsOfDeck },
+		} = getState();
 
-	const {
-		game: {
-			pileOfCards,
-			cardsOfDeck
-		}
-	} = getState();
+		const amtOfCardOfDeck = cardsOfDeck.length;
+		let returnPileOfCards = [...pileOfCards];
+		let returnCardOfDeck = [...cardsOfDeck];
 
-	const amtOfCardOfDeck = cardsOfDeck.length;
-	let returnPileOfCards = [...pileOfCards];
-	let returnCardOfDeck = [...cardsOfDeck];
-
-	// 補到12張
-	if (amtOfCardOfDeck < 12) {
-		for (let i = 0; i < 12 - amtOfCardOfDeck; i++) {
-			const card = returnPileOfCards.shift();
-			if (card) {
-				returnCardOfDeck.push(card);
+		// 補到12張
+		if (amtOfCardOfDeck < 12) {
+			for (let i = 0; i < 12 - amtOfCardOfDeck; i++) {
+				const card = returnPileOfCards.shift();
+				if (card) {
+					returnCardOfDeck.push(card);
+				}
 			}
 		}
-	} 
 
-	const selectedCards: CardInfo[] = [];
-	let isFoundSet = false;
-	const check = (checkSelectedCards: CardInfo[], index: number) => {
-
-		if (isFoundSet) {
-			return;
-		}
-		
-		if (checkSelectedCards.length === 3) {
-			isFoundSet = checkSet(checkSelectedCards);
-			return;
-		}
-
-		for(let i = index ; i < returnCardOfDeck.length; i++) {
-
-			if (!returnCardOfDeck[i]) {
-				break;
-			}
-			selectedCards.push(returnCardOfDeck[i]);
-			check(selectedCards, i + 1); 
-			selectedCards.pop();
-
+		const selectedCards: CardInfo[] = [];
+		let isFoundSet = false;
+		const check = (checkSelectedCards: CardInfo[], index: number) => {
 			if (isFoundSet) {
-				break;
+				return;
 			}
-		}
-	}
 
-	check([], 0);
-	
-	// 確認是否有set
-	// 暫不考慮結束遊戲的情況
-	// 但後續開始玩之後確認是否可以正確執行補牌
-	// TODO: 7/10 開發搶答功能(預計以modal方式呈現) => 選卡片
-	while (
-		!isFoundSet &&
-		returnPileOfCards.length
-	) {
-		for (let i = 0; i < 3; i++) {
-			const card = returnPileOfCards.shift();
-			if (card) {
-				returnCardOfDeck.push(card);
+			if (checkSelectedCards.length === 3) {
+				isFoundSet = checkSet(checkSelectedCards);
+				return;
 			}
-		}
+
+			for (let i = index; i < returnCardOfDeck.length; i++) {
+				if (!returnCardOfDeck[i]) {
+					break;
+				}
+				selectedCards.push(returnCardOfDeck[i]);
+				check(selectedCards, i + 1);
+				selectedCards.pop();
+
+				if (isFoundSet) {
+					break;
+				}
+			}
+		};
+
 		check([], 0);
-	}
 
-	return {
-		pileOfCards: returnPileOfCards,
-		cardsOfDeck: returnCardOfDeck,
-	}
+		// 確認是否有set
+		// 暫不考慮結束遊戲的情況
+		// 但後續開始玩之後確認是否可以正確執行補牌
+		// TODO: 7/10 開發搶答功能(預計以modal方式呈現) => 選卡片
+		while (!isFoundSet && returnPileOfCards.length) {
+			for (let i = 0; i < 3; i++) {
+				const card = returnPileOfCards.shift();
+				if (card) {
+					returnCardOfDeck.push(card);
+				}
+			}
+			check([], 0);
+		}
 
-})
+		return {
+			pileOfCards: returnPileOfCards,
+			cardsOfDeck: returnCardOfDeck,
+		};
+	},
+);
 
 export const reducer = {
 	game: handleActions<State, any>(
@@ -160,7 +152,7 @@ export const reducer = {
 			INITIAL_PILE_OF_CARDS: (state: State, action: Action<CardInfo[]>) => ({
 				...state,
 				pileOfCards: [...action.payload] || [],
-				cardsOfDeck: []
+				cardsOfDeck: [],
 			}),
 			DEAL_THE_CARD: (state: State, action: Action<State>) => ({
 				...state,
@@ -179,7 +171,7 @@ const gameSelector = (state: GlobalState) => ({
 
 const gameActionMap = {
 	initialPileOfCards,
-	dealCard
+	dealCard,
 };
 
 type GameSelector = ReturnType<typeof gameSelector>;

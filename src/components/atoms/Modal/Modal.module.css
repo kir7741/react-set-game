@@ -1,0 +1,32 @@
+.backdrop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1000;
+	background-color: rgba(20, 20, 20, .5);
+
+}
+
+.modal-wrapper {
+	display: grid;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.modal {
+	display: grid;
+	grid-template-rows: 60px auto 60px;
+	background-color: white;
+	border-radius: 5px;
+	box-shadow: 1px 1px 10px 1px #444;
+	min-width: 300px;
+	max-height: 80vh;
+}
