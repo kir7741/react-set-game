@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Button from '../../components/atoms/Button/Button';
 import Input from '../../components/atoms/Input/Input';
+import Paint from '../../components/atoms/Paint/Paint';
 
 import { usePlayer } from '../../models/player';
 
@@ -49,6 +50,8 @@ const Home = () => {
 				+
 			</Button>
 			<Button onClick={() => navigate('game')}>開始遊戲</Button>
+			{/* 測試用 */}
+			<Paint id="test"></Paint>
 		</div>
 	);
 };
