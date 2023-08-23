@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, useRef } from 'react';
+import React, { HTMLAttributes, useRef, useState } from 'react';
 import { CardInfo } from '../../../interface/card-info.interface';
 import { AmountType } from '../../../enum/amount-type.enum';
 import { ColorType } from '../../../enum/color-type.enum';
@@ -56,12 +56,16 @@ const Paint: React.FC<PaintProperty> = ({
 	}]
 }) => {
   const canvasRef = useRef(null);
+  const [count, setCount] = useState<number>(0);
 
 	const [
 		{canvasObj},
-		{addRectangle}
+		{
+			addRectangle,
+			drawCard
+		}
 	// eslint-disable-next-line no-restricted-globals
-	] = useCanvas(canvasRef as React.MutableRefObject<any>, {width: innerWidth, height: innerHeight});
+	] = useCanvas(canvasRef as React.MutableRefObject<any>, {width: innerWidth, height: innerHeight - 200});
 
   // useEffect(() => {
 
@@ -115,11 +119,23 @@ const Paint: React.FC<PaintProperty> = ({
 		<>
 			<canvas ref={canvasRef} />
 			<button
-				onClick={() => addRectangle({
-					action: (id: string) => {
-						console.log(id)
-					}
-				})}
+				// onClick={() => addRectangle({
+				// 	action: (id: string) => {
+				// 		console.log(id)
+				// 	}
+				// })}
+				onClick={() => {
+
+					drawCard({
+						id: "a",
+						amount: count,
+						color: ColorType.BLUE,
+						fill: FillType.FILLED,
+						shape: ShapeType.CIRCLE,
+						status: CardStatusType.DECK
+					}, count)
+					setCount(pre => pre + 1);
+				}}
 			>click me</button>
 		</>
 	);
