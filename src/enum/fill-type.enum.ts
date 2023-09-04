@@ -17,7 +17,7 @@ export enum FillType {
   FILLED = 2,
   
   /**
-   * 斜線
+   * 線
    */
   SLASH = 3
   

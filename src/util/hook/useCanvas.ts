@@ -3,10 +3,17 @@ import { useRef, useEffect, useState } from 'react';
 import {fabric} from 'fabric'
 import { CanvasSettingInfo } from '../../interface/canvas-setting-info.interface';
 import { CardInfo } from '../../interface/card-info.interface';
+import { ColorType } from '../../enum/color-type.enum';
+import { ShapeType } from '../../enum/shape-type.enum';
+import { FillType } from '../../enum/fill-type.enum';
 
 type CanvasMap = {
   canvasObj: fabric.Canvas
 }
+
+const cardWidth = 75
+const cardHeight = 120;
+
 
 const useCanvas = (
   canvasRef: React.MutableRefObject<HTMLCanvasElement>,
@@ -111,36 +118,284 @@ const useCanvas = (
   }
 
   const drawCard = (cardInfo: CardInfo, index: number) => {
-
-    const width = 75
-    const height = 120;
-
     const cardBorder = new fabric.Rect({
-      width,
-      height,
-      top: 5 + Math.floor(index / 6) * (height + 20),
-      left: 150 + (index % 6) * ( width + 20),
+      width: cardWidth,
+      height: cardHeight,
+      top: 5 + Math.floor(index / 6) * (cardHeight + 20),
+      left: 150 + (index % 6) * ( cardWidth + 20),
       stroke: 'red',
       strokeWidth: 5,
       fill: 'rgba(0,0,0,0)',
       selectable: true, // 设置为可选中
     });
 
-    const text = new fabric.Text((cardInfo.amount).toString(), {
-      top: 25 + Math.floor(index / 6) * (height + 20),
-      left: 175 + (index % 6) * (width + 20),
-      fontSize: 24
-    })
+    const text = drawNumberText(cardInfo, index);
+
+    const shape = drawShape(cardInfo, index);
 
     // 圖組合併
-    const merge = new fabric.Group([cardBorder, text], {
+    const merge = new fabric.Group([cardBorder, shape, text], {
       data: cardInfo
     });
+
     merge.on('mousedown', (e) => {
       console.log(e)
     });
+
+
     canvasObj.add(merge);
 
+  }
+
+  const getColor = (type: ColorType) => {
+
+    let color = '';
+
+    switch (type) {
+      case ColorType.RED: 
+        color = '#FF8888';
+        break;
+      case ColorType.GREEN: 
+        color = '#88FF88';
+        break;
+      case ColorType.BLUE: 
+        color = '#8888FF';
+        break;
+
+    }
+
+    return color;
+
+  }
+
+  const drawShape = (cardInfo: CardInfo, index: number) => {
+
+
+
+
+    const color = getColor(cardInfo.color);
+    let graphic = null;
+
+    console.log(cardInfo)
+
+    switch(cardInfo.shape) {
+
+      case ShapeType.CIRCLE:
+
+        switch(cardInfo.fill) {
+
+          case FillType.TRANSPARENT:
+            graphic = new fabric.Circle({
+              radius: 30,
+              top: 5 + Math.floor(index / 6) * (cardHeight + 20),
+              left: 150 + (index % 6) * ( cardWidth + 20),
+              stroke: color,
+              strokeWidth: 5,
+              fill: 'rgba(0,0,0,0)',
+              selectable: true, // 设置为可选中
+            });
+            break;
+
+          case FillType.FILLED:
+            console.log()
+            graphic = new fabric.Circle({
+              radius: 30,
+              top: 5 + Math.floor(index / 6) * (cardHeight + 20),
+              left: 150 + (index % 6) * ( cardWidth + 20),
+              stroke: color,
+              strokeWidth: 5,
+              fill: color,
+              selectable: true, // 设置为可选中
+            });
+            break;
+
+          case FillType.SLASH:
+
+            graphic = [1,2,3].reduce((pre: any, cur) => {
+              console.log(pre)
+              return new fabric.Group([
+                pre, 
+                new fabric.Circle({
+                  radius: 30 - (+cur * 8),
+                  top: 5 + Math.floor(index / 6) * (cardHeight + 20) + (+cur * 8),
+                  left: 150 + (index % 6) * ( cardWidth + 20) + (+cur * 8),
+                  stroke: color,
+                  strokeWidth: 5,
+                  fill: 'rgba(0,0,0,0)',
+                  selectable: true, // 设置为可选中
+                })
+              ]);
+            }, new fabric.Circle({
+              radius: 30,
+              top: 5 + Math.floor(index / 6) * (cardHeight + 20),
+              left: 150 + (index % 6) * ( cardWidth + 20),
+              stroke: color,
+              strokeWidth: 5,
+              fill: 'rgba(0,0,0,0)',
+              selectable: true, // 设置为可选中
+            }));
+
+            break;
+
+        }
+
+        break;
+      case ShapeType.TRIANGLE:
+
+
+        switch(cardInfo.fill) {
+
+          case FillType.TRANSPARENT:
+            graphic = new fabric.Triangle({
+              width: 60,
+              height: 60,
+              angle: 0,
+              top: 5 + Math.floor(index / 6) * (cardHeight + 20),
+              left: 150 + (index % 6) * ( cardWidth + 20),
+              stroke: color,
+              strokeWidth: 5,
+              fill: 'rgba(0,0,0,0)',
+              selectable: true, // 设置为可选中
+            });
+            break;
+
+          case FillType.FILLED:
+            graphic = new fabric.Triangle({
+              width: 60,
+              height: 60,
+              angle: 0,
+              top: 5 + Math.floor(index / 6) * (cardHeight + 20),
+              left: 150 + (index % 6) * ( cardWidth + 20),
+              stroke: color,
+              strokeWidth: 5,
+              fill: color,
+              selectable: true, // 设置为可选中
+            });
+            break;
+
+          case FillType.SLASH:
+
+
+            graphic = [1,2,3].reduce((pre: any, cur) => {
+              console.log(pre)
+              const unit = +cur * 5;
+              const ca = ['', '#FF0000', '#00ff00', '#0000ff']
+              return new fabric.Group([
+                pre, 
+                new fabric.Triangle({
+                  width: 60 - (unit * 2 * Math.sqrt(3)),
+                  height: 60 - (unit * 2 *  Math.sqrt(3)),
+                  angle: 0,
+                  top: 5 + Math.floor(index / 6) * (cardHeight + 20) + ((+unit) * Math.sqrt(6)),
+                  left: 150 + (index % 6) * ( cardWidth + 20) + ((+unit * 2 )),
+                  stroke: ca[cur],
+                  strokeWidth: 1,
+                  fill: 'rgba(0,0,0,0)',
+                  selectable: true, // 设置为可选中
+                })
+              ]);
+            }, new fabric.Triangle({
+              width: 60,
+              height: 60,
+              angle: 0,
+              top: 5 + Math.floor(index / 6) * (cardHeight + 20),
+              left: 150 + (index % 6) * ( cardWidth + 20),
+              stroke: color,
+              strokeWidth: 5,
+              fill: 'rgba(0,0,0,0)',
+              selectable: true, // 设置为可选中
+            }));
+
+            break;
+
+        }
+
+
+
+        break;
+
+      case ShapeType.SQUARE:
+
+        switch(cardInfo.fill) {
+
+          case FillType.TRANSPARENT:
+            graphic = new fabric.Rect({
+              width: 60,
+              height: 60,
+              top: 5 + Math.floor(index / 6) * (cardHeight + 20),
+              left: 150 + (index % 6) * ( cardWidth + 20),
+              stroke: color,
+              strokeWidth: 5,
+              fill: 'rgba(0,0,0,0)',
+              selectable: true, // 设置为可选中
+            });
+            break;
+
+          case FillType.FILLED:
+            graphic = new fabric.Rect({
+              width: 60,
+              height: 60,
+              top: 5 + Math.floor(index / 6) * (cardHeight + 20),
+              left: 150 + (index % 6) * ( cardWidth + 20),
+              stroke: color,
+              strokeWidth: 5,
+              fill: color,
+              selectable: true, // 设置为可选中
+            });
+            break;
+
+          case FillType.SLASH:
+
+            graphic = [1,2,3].reduce((pre: any, cur) => {
+              console.log(pre)
+              return new fabric.Group([
+                pre, 
+                new fabric.Rect({
+                  width: 60 - (+cur * 16),
+                  height: 60 - (+cur * 16),
+                  top: 5 + Math.floor(index / 6) * (cardHeight + 20) + (+cur * 8),
+                  left: 150 + (index % 6) * ( cardWidth + 20) + (+cur * 8),
+                  stroke: color,
+                  strokeWidth: 5,
+                  fill: 'rgba(0,0,0,0)',
+                  selectable: true, // 设置为可选中
+                })
+              ]);
+            }, new fabric.Rect({
+              width: 60,
+              height: 60,
+              top: 5 + Math.floor(index / 6) * (cardHeight + 20),
+              left: 150 + (index % 6) * ( cardWidth + 20),
+              stroke: color,
+              strokeWidth: 5,
+              fill: 'rgba(0,0,0,0)',
+              selectable: true, // 设置为可选中
+            }));
+
+            break;
+
+        }
+
+
+
+        break;
+
+      
+
+    }
+
+    return graphic;
+
+  }
+
+  const drawNumberText = (cardInfo: CardInfo, index: number): fabric.Text => {
+    const textGraphic = new fabric.Text((cardInfo.amount).toString(), {
+      top: 25 + Math.floor(index / 6) * (cardHeight + 20),
+      left: 175 + (index % 6) * (cardWidth + 20),
+      fontSize: 24
+    });
+
+    return textGraphic; 
   }
 
   return [

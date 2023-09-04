@@ -126,14 +126,38 @@ const Paint: React.FC<PaintProperty> = ({
 				// })}
 				onClick={() => {
 
-					drawCard({
-						id: "a",
-						amount: count,
-						color: ColorType.BLUE,
-						fill: FillType.FILLED,
-						shape: ShapeType.CIRCLE,
-						status: CardStatusType.DECK
-					}, count)
+
+					const a = [
+						{
+							id: "a",
+							amount: count,
+							color: ColorType.RED,
+							fill: FillType.SLASH,
+							shape: ShapeType.CIRCLE,
+							status: CardStatusType.DECK
+						},
+						{
+							id: "b",
+							amount: count,
+							color: ColorType.GREEN,
+							fill: FillType.SLASH,
+							shape: ShapeType.SQUARE,
+							status: CardStatusType.DECK
+						},
+						{
+							id: "c",
+							amount: count,
+							color: ColorType.BLUE,
+							fill: FillType.SLASH,
+							shape: ShapeType.TRIANGLE,
+							status: CardStatusType.DECK
+						}
+
+					];
+
+					let random = Math.floor(Math.random() * 3);
+
+					drawCard(a[2], count)
 					setCount(pre => pre + 1);
 				}}
 			>click me</button>
