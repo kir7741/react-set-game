@@ -2,15 +2,15 @@
  * canvas 畫布設定
  *
  * @export
- * @interface CanvasSettingInfo
+ * @interface CanvasOptions
  */
-export interface CanvasSettingInfo {
+export interface CanvasOptions {
 
   /**
    * 寬度
    *
    * @type {number}
-   * @memberof CanvasSettingInfo
+   * @memberof CanvasOptions
    */
   width: number;
 
@@ -18,7 +18,7 @@ export interface CanvasSettingInfo {
    * 高度
    *
    * @type {number}
-   * @memberof CanvasSettingInfo
+   * @memberof CanvasOptions
    */
   height: number;
 
