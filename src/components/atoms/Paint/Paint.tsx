@@ -58,12 +58,14 @@ const Paint: React.FC<PaintProperty> = ({
 
 	const [
 		{ canvasObj },
-		{ addRectangle, drawCard },
+		{ toggleCardSize, drawCard },
 		// eslint-disable-next-line no-restricted-globals
 	] = useCanvas(canvasRef, {
 		width: window.innerWidth,
 		height: window.innerHeight - 200,
 	});
+
+	console.log('rerererererer')
 
 	// useEffect(() => {
 
@@ -127,14 +129,39 @@ const Paint: React.FC<PaintProperty> = ({
 					const colorrandom = Math.floor(Math.random() * 3);
 
 					const graphicData = {
-						id: 'a',
+						id: 'b',
 						amount: amountrandom + 1,
 						color: colorArray[colorrandom],
 						fill: fillArray[fillrandom],
 						shape: shapeArray[shaperandom],
 						status: CardStatusType.DECK,
 					};
-					drawCard(graphicData, count);
+
+					const merged = drawCard(
+						graphicData, 
+						count
+					);
+
+					const list = canvasObj.getObjects();
+
+					const test = list.find((g) => {
+						return g.data.id === 'b'
+					});
+
+					console.log(test)
+
+					setTimeout(() => {
+						toggleCardSize(test, 1.5);
+					}, 3000)
+
+					
+
+					
+					// canvasObj.forEachObject((t) => {
+					// 	console.log(t)
+					// })
+					console.log(canvasObj)
+					
 					setCount(pre => pre + 1);
 				}}
 			>

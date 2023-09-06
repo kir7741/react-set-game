@@ -51,7 +51,6 @@ const Home = () => {
 			</Button>
 			<Button onClick={() => navigate('game')}>開始遊戲</Button>
 			{/* 測試用 */}
-			<Paint id="test"></Paint>
 		</div>
 	);
 };

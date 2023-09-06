@@ -5,6 +5,7 @@ import RaceAnswerDialog from '../../components/molecules/RaceAnswerDialog/RaceAn
 import { usePlayer } from '../../models/player';
 
 import styles from './Game.module.css';
+import Paint from '../../components/atoms/Paint/Paint';
 
 const Game = () => {
 	const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +23,7 @@ const Game = () => {
 		<>
 			<div className="home">
 				{playerList.find(player => player.playingStatus)
-					? playerList.find(player => player.playingStatus)!.name
+					? <Paint id="test"></Paint>
 					: ''}
 			</div>
 			<RaceAnswerDialog
