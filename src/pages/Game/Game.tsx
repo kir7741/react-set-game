@@ -22,9 +22,7 @@ const Game = () => {
 	return (
 		<>
 			<div className="home">
-				{playerList.find(player => player.playingStatus)
-					? <Paint id="test"></Paint>
-					: ''}
+				{playerList.find(player => player.playingStatus) ? <Paint id="test"></Paint> : ''}
 			</div>
 			<RaceAnswerDialog
 				isOpen={isOpen}

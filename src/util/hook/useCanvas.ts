@@ -5,11 +5,14 @@ import { CardInfo } from '../../interface/card-info.interface';
 import { ColorType } from '../../enum/color-type.enum';
 import { ShapeType } from '../../enum/shape-type.enum';
 import { FillType } from '../../enum/fill-type.enum';
-import { CardStatusType } from '../../enum/card-status-type.enum';
-import { useSelector } from 'react-redux';
 
 type CanvasMap = {
 	canvasObj: fabric.Canvas;
+};
+
+type CanvasActionMap = {
+	drawCard: (cardInfo: CardInfo, index: number, clickHandler?: () => void) => fabric.Group;
+	toggleCardSelected: (id: string) => void;
 };
 
 const cardWidth = 75;
@@ -18,11 +21,9 @@ const cardHeight = 120;
 const useCanvas = (
 	canvasRef: React.RefObject<HTMLCanvasElement>,
 	option: CanvasOptions,
-): [canvasMap: CanvasMap, handler: Record<string, any>] => {
+): [canvasMap: CanvasMap, handler: CanvasActionMap] => {
 	const initRef = useRef(false);
-	const [canvasObj, setCanvasObj] = useState<any>(null);
-  const test = useSelector((state) => state);
-  console.log(test)
+	const [canvasObj, setCanvasObj] = useState<fabric.Canvas | null>(null);
 
 	useEffect(() => {
 		// 初始化畫布
@@ -38,58 +39,9 @@ const useCanvas = (
 	}, []);
 
 	// TODO: 是否把所有 fabric 圖像物件轉成陣列或物件（把cardInfo當作區分其差異的東西）
-  // 傳出 => 要傳出，由使用的人丟入圖像物件當參數 然觸發內部韓式（ex: toggleCardSize）
+	// 傳出 => 要傳出，由使用的人丟入圖像物件當參數 然觸發內部韓式（ex: toggleCardSize）
 	// TODO: 綁點擊事件 個別綁嗎 =>  個別綁定，傳事件進去
 	// TODO: 先移除排堆資料後 => 補牌 => 算位置 => 動畫（）
-
-	/**
-	 * 畫卡片
-	 *
-	 * @param cardInfo - 卡片資訊
-	 * @param index - 索引位置
-	 */
-	const drawCard = (cardInfo: CardInfo, index: number, clickHandler: () => void) => {
-		const cardBorder = new fabric.Rect({
-			width: cardWidth,
-			height: cardHeight,
-			top: 5 + Math.floor(index / 6) * (cardHeight + 20),
-			left: 150 + (index % 6) * (cardWidth + 20),
-			stroke: 'black',
-			strokeWidth: 5,
-			fill: 'rgba(0,0,0,0)',
-			selectable: false,
-		});
-
-		const text = drawNumberText(cardInfo, index);
-
-		const shape = drawShape(cardInfo, index);
-
-		// 圖組合併
-		const merge = new fabric.Group([cardBorder, shape, text], {
-			data: cardInfo,
-			selectable: false,
-		});
-
-		merge.on('mousedown', e => {
-      
-      console.log('click')
-
-
-    });
-
-		canvasObj.add(merge);
-
-    return merge;
-
-	};
-
-  const toggleCardSize = (graphic: fabric.Object, scaleAmt: number) => {
-    console.log('trig')
-    console.log(graphic, scaleAmt)
-    graphic.scaleX = scaleAmt;
-    graphic.scaleY = scaleAmt;
-  }
-
 	/**
 	 * 取得顏色色碼
 	 *
@@ -111,6 +63,96 @@ const useCanvas = (
 		}
 
 		return color;
+	};
+
+	/**
+	 * 切換卡片選取狀態
+	 *
+	 * @param {string} cardId
+	 */
+	const toggleCardSelected = (cardId: string) => {
+		if (!canvasObj) {
+			return;
+		}
+
+		const cardGroupList = canvasObj.getObjects();
+		const targetCard = cardGroupList.find(cardGroup => {
+			return cardGroup.data.id === cardId;
+		}) as fabric.Group;
+
+		const groupList = targetCard!.getObjects();
+		const cardBorderIndex = groupList.findIndex(group => group.data === 'border');
+		const cardBorder = targetCard.item(cardBorderIndex);
+		const originBorderColor = cardBorder.stroke;
+
+		if (originBorderColor === 'black') {
+			cardBorder.set({
+				stroke: 'gray',
+			});
+			return;
+		}
+
+		cardBorder.set({
+			stroke: 'black',
+		});
+
+	};
+
+	/**
+	 * 畫卡片
+	 *
+	 * @param cardInfo - 卡片資訊
+	 * @param index - 索引位置
+	 */
+	const drawCard = (cardInfo: CardInfo, index: number, clickHandler = () => {}): fabric.Group => {
+		const border = drawCardBorder(index);
+		const text = drawNumberText(cardInfo, index);
+		const shape = drawShape(cardInfo, index);
+
+		// 圖組合併
+		const merge = new fabric.Group([border, shape, text], {
+			data: cardInfo,
+			selectable: false,
+			originX: 'center',
+			originY: 'center',
+		});
+
+
+		merge.on('mousedown', e => {
+			clickHandler();
+		});
+
+		if (canvasObj) {
+			canvasObj.add(merge);
+		}
+
+		return merge;
+	};
+
+	/**
+	 * 繪製卡片邊框
+	 *
+	 * @param {number} index - 索引位置
+	 * @return {*}  {fabric.Rect}
+	 */
+	const drawCardBorder = (index: number): fabric.Rect => {
+		const columns = 6;
+		const verticalGap = 20;
+		const horizontalGap = 20;
+
+		const cardBorder = new fabric.Rect({
+			width: cardWidth,
+			height: cardHeight,
+			top: 5 + Math.floor(index / columns) * (cardHeight + verticalGap),
+			left: 150 + (index % columns) * (cardWidth + horizontalGap),
+			stroke: 'black',
+			strokeWidth: 5,
+			fill: 'rgba(0, 0, 0, 0)',
+			selectable: false,
+			data: 'border'
+		});
+
+		return cardBorder;
 	};
 
 	/**
@@ -337,11 +379,11 @@ const useCanvas = (
 
 	return [
 		{
-			canvasObj,
+			canvasObj: canvasObj!,
 		},
 		{
 			drawCard,
-      toggleCardSize
+			toggleCardSelected,
 		},
 	];
 };

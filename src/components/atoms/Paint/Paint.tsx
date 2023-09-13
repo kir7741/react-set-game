@@ -56,16 +56,12 @@ const Paint: React.FC<PaintProperty> = ({
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [count, setCount] = useState<number>(0);
 
-	const [
-		{ canvasObj },
-		{ toggleCardSize, drawCard },
-		// eslint-disable-next-line no-restricted-globals
-	] = useCanvas(canvasRef, {
+	const [{ canvasObj }, { toggleCardSelected, drawCard }] = useCanvas(canvasRef, {
 		width: window.innerWidth,
 		height: window.innerHeight - 200,
 	});
 
-	console.log('rerererererer')
+	console.log('rerererererer');
 
 	// useEffect(() => {
 
@@ -137,31 +133,9 @@ const Paint: React.FC<PaintProperty> = ({
 						status: CardStatusType.DECK,
 					};
 
-					const merged = drawCard(
-						graphicData, 
-						count
-					);
-
-					const list = canvasObj.getObjects();
-
-					const test = list.find((g) => {
-						return g.data.id === 'b'
+					const merged = drawCard(graphicData, count, () => {
+						toggleCardSelected(graphicData.id);
 					});
-
-					console.log(test)
-
-					setTimeout(() => {
-						toggleCardSize(test, 1.5);
-					}, 3000)
-
-					
-
-					
-					// canvasObj.forEachObject((t) => {
-					// 	console.log(t)
-					// })
-					console.log(canvasObj)
-					
 					setCount(pre => pre + 1);
 				}}
 			>
