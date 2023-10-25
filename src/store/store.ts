@@ -5,7 +5,7 @@ import thunkMiddleware from 'redux-thunk-fsa';
 import promiseMiddleware from 'redux-promise-middleware';
 
 let composeEnhancers = compose;
-const middleware = [logger, thunkMiddleware, promiseMiddleware];
+const middleware = [thunkMiddleware, promiseMiddleware, logger];
 
 composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // eslint-disable-line @typescript-eslint/no-explicit-any
 

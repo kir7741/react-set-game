@@ -7,7 +7,7 @@ import { ShapeType } from '../../enum/shape-type.enum';
 import { FillType } from '../../enum/fill-type.enum';
 
 type CanvasMap = {
-	canvasObj: fabric.Canvas;
+	fabricRef: fabric.Canvas;
 };
 
 type CanvasActionMap = {
@@ -24,19 +24,36 @@ const useCanvas = (
 ): [canvasMap: CanvasMap, handler: CanvasActionMap] => {
 	const initRef = useRef(false);
 	const [canvasObj, setCanvasObj] = useState<fabric.Canvas | null>(null);
+	const fabricRef = useRef<fabric.Canvas | null>(null);
 
+	// TODO: 嘗試1換成 useRef
+	// TODO: 嘗試2 畫畫時使用 async 的方式
 	useEffect(() => {
 		// 初始化畫布
-		if (!initRef.current) {
-			initRef.current = true;
-			const canvasObj: fabric.Canvas = new fabric.Canvas(canvasRef.current, {
+		// if (!initRef.current) {
+		// 	initRef.current = true;
+		// 	const canvasObj: fabric.Canvas = new fabric.Canvas(canvasRef.current, {
+		// 		width: option.width,
+		// 		height: option.height,
+		// 	});
+
+		// 	setCanvasObj(canvasObj);
+		// }
+
+		if (canvasRef.current !== null) {
+			fabricRef.current = new fabric.Canvas(canvasRef.current, {
 				width: option.width,
 				height: option.height,
 			});
-
-			setCanvasObj(canvasObj);
 		}
-	}, []);
+
+		return () => {
+			if (fabricRef.current) {
+				fabricRef.current.dispose();
+			}
+		}
+
+	}, [fabricRef]);
 
 	// TODO: 是否把所有 fabric 圖像物件轉成陣列或物件（把cardInfo當作區分其差異的東西）
 	// 傳出 => 要傳出，由使用的人丟入圖像物件當參數 然觸發內部韓式（ex: toggleCardSize）
@@ -71,11 +88,12 @@ const useCanvas = (
 	 * @param {string} cardId
 	 */
 	const toggleCardSelected = (cardId: string) => {
-		if (!canvasObj) {
+
+		if (!fabricRef.current) {
 			return;
 		}
 
-		const cardGroupList = canvasObj.getObjects();
+		const cardGroupList = fabricRef.current.getObjects();
 		const targetCard = cardGroupList.find(cardGroup => {
 			return cardGroup.data.id === cardId;
 		}) as fabric.Group;
@@ -122,8 +140,9 @@ const useCanvas = (
 			clickHandler();
 		});
 
-		if (canvasObj) {
-			canvasObj.add(merge);
+		if (fabricRef.current) {
+			fabricRef.current.add(merge);
+			fabricRef.current.renderAll();
 		}
 
 		return merge;
@@ -182,7 +201,6 @@ const useCanvas = (
 						break;
 
 					case FillType.FILLED:
-						console.log();
 						graphic = new fabric.Circle({
 							radius: 30,
 							top: 30 + Math.floor(index / 6) * (cardHeight + 20),
@@ -197,7 +215,6 @@ const useCanvas = (
 					case FillType.SLASH:
 						graphic = [1, 2, 3].reduce(
 							(pre: any, cur) => {
-								console.log(pre);
 								return new fabric.Group([
 									pre,
 									new fabric.Circle({
@@ -323,7 +340,6 @@ const useCanvas = (
 					case FillType.SLASH:
 						graphic = [1, 2, 3].reduce(
 							(pre: any, cur) => {
-								console.log(pre);
 								return new fabric.Group([
 									pre,
 									new fabric.Rect({
@@ -379,7 +395,7 @@ const useCanvas = (
 
 	return [
 		{
-			canvasObj: canvasObj!,
+			fabricRef: fabricRef.current!,
 		},
 		{
 			drawCard,

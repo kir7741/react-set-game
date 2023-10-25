@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, useRef, useState } from 'react';
+import React, { HTMLAttributes, useEffect, useRef, useState } from 'react';
 import { CardInfo } from '../../../interface/card-info.interface';
 import { AmountType } from '../../../enum/amount-type.enum';
 import { ColorType } from '../../../enum/color-type.enum';
@@ -6,6 +6,8 @@ import { FillType } from '../../../enum/fill-type.enum';
 import { ShapeType } from '../../../enum/shape-type.enum';
 import { CardStatusType } from '../../../enum/card-status-type.enum';
 import useCanvas from '../../../util/hook/useCanvas';
+import { useGame } from '../../../models/game';
+import { checkSet } from '../../../util/helper/check-set';
 
 /**
  * 樣式的介面
@@ -55,13 +57,38 @@ const Paint: React.FC<PaintProperty> = ({
 }) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [count, setCount] = useState<number>(0);
+	const [
+		{
+			pileOfCards,
+			cardsOfDeck,
+			isSelectedEnoughCards
+		}, {
+			dealCard,
+			updateCardStatus,
+			moveCardsToScoredList,
+			selectedCard,
+			chooseCorrectCard
+		}
+	] = useGame();
 
-	const [{ canvasObj }, { toggleCardSelected, drawCard }] = useCanvas(canvasRef, {
+	const [{ fabricRef }, { toggleCardSelected, drawCard }] = useCanvas(canvasRef, {
 		width: window.innerWidth,
-		height: window.innerHeight - 200,
+		height: window.innerHeight,
 	});
 
-	console.log('rerererererer');
+	useEffect(() => {
+
+		if (fabricRef) {
+			cardsOfDeck.forEach((card, index) => {
+				drawCard(card, index, () => {
+					toggleCardSelected(card.id);
+					selectedCard(card.id, card.status);
+				});
+			})
+		}
+		setCount(cardsOfDeck.length);
+
+	}, [fabricRef]);
 
 	// useEffect(() => {
 
@@ -110,37 +137,62 @@ const Paint: React.FC<PaintProperty> = ({
 		<>
 			<canvas ref={canvasRef} />
 			<button
-				// onClick={() => addRectangle({
-				// 	action: (id: string) => {
-				// 		console.log(id)
-				// 	}
-				// })}
-				onClick={() => {
-					const shapeArray = [ShapeType.CIRCLE, ShapeType.SQUARE, ShapeType.TRIANGLE];
-					const fillArray = [FillType.FILLED, FillType.SLASH, FillType.TRANSPARENT];
-					const colorArray = [ColorType.RED, ColorType.BLUE, ColorType.GREEN];
-					const amountrandom = Math.floor(Math.random() * 3);
-					const shaperandom = Math.floor(Math.random() * 3);
-					const fillrandom = Math.floor(Math.random() * 3);
-					const colorrandom = Math.floor(Math.random() * 3);
+				// // onClick={() => addRectangle({
+				// // 	action: (id: string) => {
+				// // 		console.log(id)
+				// // 	}
+				// // })}
+				// onClick={() => {
+				// 	const shapeArray = [ShapeType.CIRCLE, ShapeType.SQUARE, ShapeType.TRIANGLE];
+				// 	const fillArray = [FillType.FILLED, FillType.SLASH, FillType.TRANSPARENT];
+				// 	const colorArray = [ColorType.RED, ColorType.BLUE, ColorType.GREEN];
+				// 	const amountrandom = Math.floor(Math.random() * 3);
+				// 	const shaperandom = Math.floor(Math.random() * 3);
+				// 	const fillrandom = Math.floor(Math.random() * 3);
+				// 	const colorrandom = Math.floor(Math.random() * 3);
 
-					const graphicData = {
-						id: 'b',
-						amount: amountrandom + 1,
-						color: colorArray[colorrandom],
-						fill: fillArray[fillrandom],
-						shape: shapeArray[shaperandom],
-						status: CardStatusType.DECK,
-					};
+				// 	const graphicData = {
+				// 		id: 'b',
+				// 		amount: amountrandom + 1,
+				// 		color: colorArray[colorrandom],
+				// 		fill: fillArray[fillrandom],
+				// 		shape: shapeArray[shaperandom],
+				// 		status: CardStatusType.DECK,
+				// 	};
 
-					const merged = drawCard(graphicData, count, () => {
-						toggleCardSelected(graphicData.id);
-					});
-					setCount(pre => pre + 1);
-				}}
+				// 	const merged = drawCard(graphicData, count, () => {
+				// 		toggleCardSelected(graphicData.id);
+				// 		updateCardStatus(graphicData.id, CardStatusType.PICKED);
+				// 	});
+				// 	setCount(pre => pre + 1);
+				// }}
 			>
 				click me
 			</button>
+			
+			{
+				isSelectedEnoughCards && 
+				<button 
+					type="button"
+					onClick={() => {
+
+						// 1. 抓三個
+						const selectedCard = cardsOfDeck.filter((card) => card.status === CardStatusType.PICKED)
+						// 2. 丟 isSet,
+						if (checkSet(selectedCard)) {
+							chooseCorrectCard(selectedCard);
+							// 3. 是的話更新 回到選擇角色頁面
+							// 	3-1 更新 redux狀態、發牌
+							// 	3-2 farbic 移除圖片、發牌
+							return 
+						}
+						// 移除並發牌						
+						// 4. 否 清空，跳通知 回到選擇角色頁面
+							// selectedCard.forEach((card) => toggleCardSelected(card.id));
+
+					}}
+				>確定選完了嗎？</button>
+			}
 		</>
 	);
 };

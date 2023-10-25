@@ -27,11 +27,29 @@ export interface State {
 	 * @memberof State
 	 */
 	cardsOfDeck: CardInfo[];
+
+	/**
+	 * 得分後的卡片
+	 *
+	 * @type {CardInfo[]}
+	 * @memberof State
+	 */
+	scoredCards: CardInfo[];
+
+	/**
+	 * 是否已經選了足夠張數的卡片
+	 *
+	 * @type {boolean}
+	 * @memberof State
+	 */
+	isSelectedEnoughCards: boolean;
 }
 
 export const defaultState: State = {
 	pileOfCards: [],
 	cardsOfDeck: [],
+	scoredCards: [],
+	isSelectedEnoughCards: false,
 };
 
 /**
@@ -92,10 +110,13 @@ export const dealCard = createAction(
 			for (let i = 0; i < 12 - amtOfCardOfDeck; i++) {
 				const card = returnPileOfCards.shift();
 				if (card) {
+					card.status = CardStatusType.TABLE_BOARD;
 					returnCardOfDeck.push(card);
 				}
 			}
 		}
+
+		// TODO: 確認看看發牌後有沒有改變 牌桌上的狀態
 
 		const selectedCards: CardInfo[] = [];
 		let isFoundSet = false;
@@ -133,6 +154,7 @@ export const dealCard = createAction(
 			for (let i = 0; i < 3; i++) {
 				const card = returnPileOfCards.shift();
 				if (card) {
+					card.status = CardStatusType.TABLE_BOARD;
 					returnCardOfDeck.push(card);
 				}
 			}
@@ -146,32 +168,155 @@ export const dealCard = createAction(
 	},
 );
 
+/**
+ * 改變牌桌上卡片的狀態
+ */
+export const updateCardStatus = createAction(
+	'UPDATE_CARD_STATUS',
+	(cardId: string, status: CardStatusType) => (_: Dispatch, getState: () => GlobalState) => {
+		const {
+			game: { cardsOfDeck },
+		} = getState();
+
+		const foundIndex = cardsOfDeck.findIndex(cardInfo => cardInfo.id === cardId);
+		console.log(cardId)
+		console.log(status)
+		if (foundIndex !== -1) {
+			console.log('found', foundIndex)
+			cardsOfDeck[foundIndex] = {
+				...cardsOfDeck[foundIndex],
+				status,
+			};
+		}
+		return [...cardsOfDeck];
+	},
+);
+
+/**
+ * 將得分的排移到得分排堆
+ */
+export const moveCardsToScoredList = createAction(
+	'MOVE_CARDS_TO_SCORED_LIST',
+	(cardList: CardInfo[]) => (_: Dispatch, getState: () => GlobalState) => {
+		const {
+			game: { cardsOfDeck, scoredCards },
+		} = getState();
+
+		const filtedCardOfDeck = cardsOfDeck.filter(cardInfo => {
+			return !cardList.find(selectdCard => {
+				return selectdCard.id === cardInfo.id;
+			});
+		});
+
+		return {
+			cardsOfDeck: filtedCardOfDeck,
+			scoredCards: [...scoredCards, ...cardList],
+		};
+	},
+);
+
+/**
+ * 設定是否選齊足夠的牌卡
+ */
+export const setSelectedEnoughCards = createAction(
+	'SET_SELECTED_ENOUGH_CARDS',
+	(status: boolean) => status,
+);
+
+/**
+ * 選擇卡片
+ */
+export const selectedCard = createAction(
+	'SELECTED_CARD',
+	(cardId: string, status: CardStatusType) => (dispatch: Dispatch, getState: () => GlobalState) => {
+		// TODO: 重取資料 IMPORTANT FIRST!!!!!!!!!!!!
+		const {
+			game: { cardsOfDeck: originCardsOfDeck },
+		} = getState();
+		const foundCard = originCardsOfDeck.find((card) => card.id === cardId);
+		
+		dispatch(updateCardStatus(cardId, foundCard?.status === CardStatusType.TABLE_BOARD ? CardStatusType.PICKED : CardStatusType.TABLE_BOARD));
+		
+		const {
+			game: { cardsOfDeck: afterDispatchCardsOfDeck },
+		} = getState();
+		
+		const pickedCards = afterDispatchCardsOfDeck.filter(cardInfo => cardInfo.status === CardStatusType.PICKED);
+		dispatch(setSelectedEnoughCards(pickedCards.length === 3));
+	},
+);
+
+export const chooseCorrectCard = createAction(
+	'CHOOSE_CORRECT_CARD',
+	(selectedCards: CardInfo[]) => (dispatch: Dispatch, getState: ()=> GlobalState) => {
+		const {
+			game: { cardsOfDeck, scoredCards },
+		} = getState();
+
+		dispatch(moveCardsToScoredList(selectedCards))
+		dispatch(dealCard());
+
+	}
+)
+
+export const chooseErrorCard = createAction(
+	'CHOOSE_ERROR_CARD',
+	(selectedCards: CardInfo[]) => {
+
+	}
+)
+
 export const reducer = {
 	game: handleActions<State, any>(
 		{
 			INITIAL_PILE_OF_CARDS: (state: State, action: Action<CardInfo[]>) => ({
 				...state,
-				pileOfCards: [...action.payload] || [],
+				pileOfCards: [...action.payload],
 				cardsOfDeck: [],
 			}),
 			DEAL_THE_CARD: (state: State, action: Action<State>) => ({
 				...state,
-				pileOfCards: [...action.payload.pileOfCards] || [],
-				cardsOfDeck: [...action.payload.cardsOfDeck] || [],
+				pileOfCards: [...action.payload.pileOfCards],
+				cardsOfDeck: [...action.payload.cardsOfDeck],
 			}),
+			UPDATE_CARD_STATUS: (state: State, action: Action<CardInfo[]>) => ({
+				...state,
+				cardsOfDeck: action.payload,
+			}),
+			MOVE_CARDS_TO_SCORED_LIST: (state: State, action: Action<Partial<State>>) => ({
+				...state,
+				cardsOfDeck: action.payload.cardsOfDeck || [],
+				scoredCards: action.payload.scoredCards || [],
+			}),
+			SET_SELECTED_ENOUGH_CARDS: (state: State, action: Action<boolean>) => ({
+				...state,
+				isSelectedEnoughCards: action.payload
+			}),
+			// CHOOSE_CORRECT_CARD: (state: State, action: Action<Partial<State>>) => ({
+			// 	...state,
+			// 	cardsOfDeck: action.payload.cardsOfDeck || [],
+			// 	scoredCards: action.payload.scoredCards || [],
+			// })
 		},
 		defaultState,
 	),
 };
 
+// export const
 const gameSelector = (state: GlobalState) => ({
 	pileOfCards: state.game.pileOfCards,
 	cardsOfDeck: state.game.cardsOfDeck,
+	scoredCards: state.game.scoredCards,
+	isSelectedEnoughCards: state.game.isSelectedEnoughCards,
 });
 
 const gameActionMap = {
 	initialPileOfCards,
 	dealCard,
+	updateCardStatus,
+	moveCardsToScoredList,
+	selectedCard,
+	chooseCorrectCard
 };
 
 type GameSelector = ReturnType<typeof gameSelector>;
