@@ -78,6 +78,8 @@ const Paint: React.FC<PaintProperty> = ({
 
 	useEffect(() => {
 
+		// dependency array 有 cardsOfDeck 時，不論有沒有 clear 都無法切換狀態
+		// dependency array 有 fabricRef.current 時，沒有 clear 無法切換狀態，有 clear 要第二次才會切換狀態
 		if (fabricRef) {
 			cardsOfDeck.forEach((card, index) => {
 				drawCard(card, index, () => {
@@ -86,7 +88,6 @@ const Paint: React.FC<PaintProperty> = ({
 				});
 			})
 		}
-		setCount(cardsOfDeck.length);
 
 	}, [fabricRef]);
 
@@ -177,10 +178,18 @@ const Paint: React.FC<PaintProperty> = ({
 					onClick={() => {
 
 						// 1. 抓三個
-						const selectedCard = cardsOfDeck.filter((card) => card.status === CardStatusType.PICKED)
+						const pickedCard = cardsOfDeck.filter((card) => card.status === CardStatusType.PICKED)
 						// 2. 丟 isSet,
-						if (checkSet(selectedCard)) {
-							chooseCorrectCard(selectedCard);
+						console.log('checkSet(pickedCard)', checkSet(pickedCard));
+						if (checkSet(pickedCard)) {
+							chooseCorrectCard(pickedCard);
+							// fabricRef.current?.clear();
+							// cardsOfDeck.forEach((card, index) => {
+							// 	drawCard(card, index, () => {
+							// 		toggleCardSelected(card.id);
+							// 		selectedCard(card.id, card.status);
+							// 	});
+							// })
 							// 3. 是的話更新 回到選擇角色頁面
 							// 	3-1 更新 redux狀態、發牌
 							// 	3-2 farbic 移除圖片、發牌

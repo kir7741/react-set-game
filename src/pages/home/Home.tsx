@@ -30,6 +30,7 @@ const Home = () => {
 						// onBlur={() => setPlayer(info.id)}
 					/>
 					<Button
+						type="button"
 						onClick={() => {
 							if (playerList.length > minAmount) {
 								removePlayer(info.id);
@@ -41,6 +42,7 @@ const Home = () => {
 				</div>
 			))}
 			<Button
+				type="button"
 				onClick={() => {
 					if (playerList.length < maxAmount) {
 						addPlayer();
@@ -49,7 +51,9 @@ const Home = () => {
 			>
 				+
 			</Button>
-			<Button onClick={() => navigate('game')}>開始遊戲</Button>
+			<Button type="button" onClick={() => navigate('game')}>
+				開始遊戲
+			</Button>
 			{/* 測試用 */}
 		</div>
 	);

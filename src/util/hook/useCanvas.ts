@@ -7,7 +7,7 @@ import { ShapeType } from '../../enum/shape-type.enum';
 import { FillType } from '../../enum/fill-type.enum';
 
 type CanvasMap = {
-	fabricRef: fabric.Canvas;
+	fabricRef: React.MutableRefObject<fabric.Canvas | null>;
 };
 
 type CanvasActionMap = {
@@ -22,24 +22,9 @@ const useCanvas = (
 	canvasRef: React.RefObject<HTMLCanvasElement>,
 	option: CanvasOptions,
 ): [canvasMap: CanvasMap, handler: CanvasActionMap] => {
-	const initRef = useRef(false);
-	const [canvasObj, setCanvasObj] = useState<fabric.Canvas | null>(null);
 	const fabricRef = useRef<fabric.Canvas | null>(null);
 
-	// TODO: 嘗試1換成 useRef
-	// TODO: 嘗試2 畫畫時使用 async 的方式
 	useEffect(() => {
-		// 初始化畫布
-		// if (!initRef.current) {
-		// 	initRef.current = true;
-		// 	const canvasObj: fabric.Canvas = new fabric.Canvas(canvasRef.current, {
-		// 		width: option.width,
-		// 		height: option.height,
-		// 	});
-
-		// 	setCanvasObj(canvasObj);
-		// }
-
 		if (canvasRef.current !== null) {
 			fabricRef.current = new fabric.Canvas(canvasRef.current, {
 				width: option.width,
@@ -51,8 +36,7 @@ const useCanvas = (
 			if (fabricRef.current) {
 				fabricRef.current.dispose();
 			}
-		}
-
+		};
 	}, [fabricRef]);
 
 	// TODO: 是否把所有 fabric 圖像物件轉成陣列或物件（把cardInfo當作區分其差異的東西）
@@ -88,7 +72,6 @@ const useCanvas = (
 	 * @param {string} cardId
 	 */
 	const toggleCardSelected = (cardId: string) => {
-
 		if (!fabricRef.current) {
 			return;
 		}
@@ -113,7 +96,6 @@ const useCanvas = (
 		cardBorder.set({
 			stroke: 'black',
 		});
-
 	};
 
 	/**
@@ -134,7 +116,6 @@ const useCanvas = (
 			originX: 'center',
 			originY: 'center',
 		});
-
 
 		merge.on('mousedown', e => {
 			clickHandler();
@@ -168,7 +149,7 @@ const useCanvas = (
 			strokeWidth: 5,
 			fill: 'rgba(0, 0, 0, 0)',
 			selectable: false,
-			data: 'border'
+			data: 'border',
 		});
 
 		return cardBorder;
@@ -395,7 +376,7 @@ const useCanvas = (
 
 	return [
 		{
-			fabricRef: fabricRef.current!,
+			fabricRef,
 		},
 		{
 			drawCard,
