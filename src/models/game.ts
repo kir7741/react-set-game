@@ -116,8 +116,6 @@ export const dealCard = createAction(
 			}
 		}
 
-		// TODO: 確認看看發牌後有沒有改變 牌桌上的狀態
-
 		const selectedCards: CardInfo[] = [];
 		let isFoundSet = false;
 		const check = (checkSelectedCards: CardInfo[], index: number) => {
@@ -144,12 +142,8 @@ export const dealCard = createAction(
 			}
 		};
 
+		// 先檢查一次，發的牌是否有配對的組合
 		check([], 0);
-
-		// 確認是否有set
-		// 暫不考慮結束遊戲的情況
-		// 但後續開始玩之後確認是否可以正確執行補牌
-		// TODO: 7/10 開發搶答功能(預計以modal方式呈現) => 選卡片
 		while (!isFoundSet && returnPileOfCards.length) {
 			for (let i = 0; i < 3; i++) {
 				const card = returnPileOfCards.shift();
@@ -158,7 +152,13 @@ export const dealCard = createAction(
 					returnCardOfDeck.push(card);
 				}
 			}
+
 			check([], 0);
+		}
+
+		if (!isFoundSet && returnPileOfCards.length === 0) {
+			// TODO:遊戲結束
+			console.log('遊戲結束');
 		}
 
 		return {
