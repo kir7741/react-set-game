@@ -8,6 +8,10 @@ import { CardInfo } from '../../interface/card-info.interface';
  */
 export const checkSet = (cardList: CardInfo[]) => {
 
+  if (cardList.length !== 3) {
+    return false;
+  }
+
   const colorSet = new Set(cardList.map((card) => card.color));
   const fillSet = new Set(cardList.map((card) => card.fill));
   const shapeSet = new Set(cardList.map((card) => card.shape));

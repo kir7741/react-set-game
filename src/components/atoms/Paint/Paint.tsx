@@ -58,17 +58,8 @@ const Paint: React.FC<PaintProperty> = ({
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [count, setCount] = useState<number>(0);
 	const [
-		{
-			pileOfCards,
-			cardsOfDeck,
-			isSelectedEnoughCards
-		}, {
-			dealCard,
-			updateCardStatus,
-			moveCardsToScoredList,
-			selectedCard,
-			chooseCorrectCard
-		}
+		{ pileOfCards, cardsOfDeck, isSelectedEnoughCards },
+		{ updateCardStatus, moveCardsToScoredList, selectedCard, chooseCorrectCard, drawCardsOfDeck },
 	] = useGame();
 
 	const [{ fabricRef }, { toggleCardSelected, drawCard }] = useCanvas(canvasRef, {
@@ -76,19 +67,20 @@ const Paint: React.FC<PaintProperty> = ({
 		height: window.innerHeight,
 	});
 
-	useEffect(() => {
 
+	const drawFn = (card: CardInfo, index: number) => {
+		drawCard(card, index, () => {
+			toggleCardSelected(card.id);
+			selectedCard(card.id, card.status);
+		});
+	}
+
+	useEffect(() => {
 		// dependency array 有 cardsOfDeck 時，不論有沒有 clear 都無法切換狀態
 		// dependency array 有 fabricRef.current 時，沒有 clear 無法切換狀態，有 clear 要第二次才會切換狀態
 		if (fabricRef) {
-			cardsOfDeck.forEach((card, index) => {
-				drawCard(card, index, () => {
-					toggleCardSelected(card.id);
-					selectedCard(card.id, card.status);
-				});
-			})
+			drawCardsOfDeck(fabricRef,drawFn);
 		}
-
 	}, [fabricRef]);
 
 	// useEffect(() => {
@@ -138,70 +130,61 @@ const Paint: React.FC<PaintProperty> = ({
 		<>
 			<canvas ref={canvasRef} />
 			<button
-				// // onClick={() => addRectangle({
-				// // 	action: (id: string) => {
-				// // 		console.log(id)
-				// // 	}
-				// // })}
-				// onClick={() => {
-				// 	const shapeArray = [ShapeType.CIRCLE, ShapeType.SQUARE, ShapeType.TRIANGLE];
-				// 	const fillArray = [FillType.FILLED, FillType.SLASH, FillType.TRANSPARENT];
-				// 	const colorArray = [ColorType.RED, ColorType.BLUE, ColorType.GREEN];
-				// 	const amountrandom = Math.floor(Math.random() * 3);
-				// 	const shaperandom = Math.floor(Math.random() * 3);
-				// 	const fillrandom = Math.floor(Math.random() * 3);
-				// 	const colorrandom = Math.floor(Math.random() * 3);
+			// // onClick={() => addRectangle({
+			// // 	action: (id: string) => {
+			// // 		console.log(id)
+			// // 	}
+			// // })}
+			// onClick={() => {
+			// 	const shapeArray = [ShapeType.CIRCLE, ShapeType.SQUARE, ShapeType.TRIANGLE];
+			// 	const fillArray = [FillType.FILLED, FillType.SLASH, FillType.TRANSPARENT];
+			// 	const colorArray = [ColorType.RED, ColorType.BLUE, ColorType.GREEN];
+			// 	const amountrandom = Math.floor(Math.random() * 3);
+			// 	const shaperandom = Math.floor(Math.random() * 3);
+			// 	const fillrandom = Math.floor(Math.random() * 3);
+			// 	const colorrandom = Math.floor(Math.random() * 3);
 
-				// 	const graphicData = {
-				// 		id: 'b',
-				// 		amount: amountrandom + 1,
-				// 		color: colorArray[colorrandom],
-				// 		fill: fillArray[fillrandom],
-				// 		shape: shapeArray[shaperandom],
-				// 		status: CardStatusType.DECK,
-				// 	};
+			// 	const graphicData = {
+			// 		id: 'b',
+			// 		amount: amountrandom + 1,
+			// 		color: colorArray[colorrandom],
+			// 		fill: fillArray[fillrandom],
+			// 		shape: shapeArray[shaperandom],
+			// 		status: CardStatusType.DECK,
+			// 	};
 
-				// 	const merged = drawCard(graphicData, count, () => {
-				// 		toggleCardSelected(graphicData.id);
-				// 		updateCardStatus(graphicData.id, CardStatusType.PICKED);
-				// 	});
-				// 	setCount(pre => pre + 1);
-				// }}
+			// 	const merged = drawCard(graphicData, count, () => {
+			// 		toggleCardSelected(graphicData.id);
+			// 		updateCardStatus(graphicData.id, CardStatusType.PICKED);
+			// 	});
+			// 	setCount(pre => pre + 1);
+			// }}
 			>
 				click me
 			</button>
-			
-			{
-				isSelectedEnoughCards && 
-				<button 
+
+			{isSelectedEnoughCards && (
+				<button
 					type="button"
 					onClick={() => {
-
-						// 1. 抓三個
-						const pickedCard = cardsOfDeck.filter((card) => card.status === CardStatusType.PICKED)
-						// 2. 丟 isSet,
-						console.log('checkSet(pickedCard)', checkSet(pickedCard));
+						// 1. 取得使用者選取的卡片
+						const pickedCard = cardsOfDeck.filter(card => card.status === CardStatusType.PICKED);
+						// 2. 檢查卡片是否可以得分
 						if (checkSet(pickedCard)) {
-							chooseCorrectCard(pickedCard);
-							// fabricRef.current?.clear();
-							// cardsOfDeck.forEach((card, index) => {
-							// 	drawCard(card, index, () => {
-							// 		toggleCardSelected(card.id);
-							// 		selectedCard(card.id, card.status);
-							// 	});
-							// })
-							// 3. 是的話更新 回到選擇角色頁面
-							// 	3-1 更新 redux狀態、發牌
-							// 	3-2 farbic 移除圖片、發牌
-							return 
-						}
-						// 移除並發牌						
-						// 4. 否 清空，跳通知 回到選擇角色頁面
-							// selectedCard.forEach((card) => toggleCardSelected(card.id));
 
+							// 3. 若可以得分則更新卡片狀態，重新繪製牌桌上的卡片，直到排堆中沒有卡片
+							chooseCorrectCard(pickedCard);
+							drawCardsOfDeck(fabricRef,drawFn);
+							return;
+						}
+						// 移除並發牌
+						// 4. 否 清空，跳通知 回到選擇角色頁面
+						// selectedCard.forEach((card) => toggleCardSelected(card.id));
 					}}
-				>確定選完了嗎？</button>
-			}
+				>
+					確定選完了嗎？
+				</button>
+			)}
 		</>
 	);
 };

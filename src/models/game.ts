@@ -179,10 +179,10 @@ export const updateCardStatus = createAction(
 		} = getState();
 
 		const foundIndex = cardsOfDeck.findIndex(cardInfo => cardInfo.id === cardId);
-		console.log(cardId)
-		console.log(status)
+		console.log(cardId);
+		console.log(status);
 		if (foundIndex !== -1) {
-			console.log('found', foundIndex)
+			console.log('found', foundIndex);
 			cardsOfDeck[foundIndex] = {
 				...cardsOfDeck[foundIndex],
 				status,
@@ -233,38 +233,52 @@ export const selectedCard = createAction(
 		const {
 			game: { cardsOfDeck: originCardsOfDeck },
 		} = getState();
-		const foundCard = originCardsOfDeck.find((card) => card.id === cardId);
-		
-		dispatch(updateCardStatus(cardId, foundCard?.status === CardStatusType.TABLE_BOARD ? CardStatusType.PICKED : CardStatusType.TABLE_BOARD));
-		
+		const foundCard = originCardsOfDeck.find(card => card.id === cardId);
+
+		dispatch(
+			updateCardStatus(
+				cardId,
+				foundCard?.status === CardStatusType.TABLE_BOARD
+					? CardStatusType.PICKED
+					: CardStatusType.TABLE_BOARD,
+			),
+		);
+
 		const {
 			game: { cardsOfDeck: afterDispatchCardsOfDeck },
 		} = getState();
-		
-		const pickedCards = afterDispatchCardsOfDeck.filter(cardInfo => cardInfo.status === CardStatusType.PICKED);
+
+		const pickedCards = afterDispatchCardsOfDeck.filter(
+			cardInfo => cardInfo.status === CardStatusType.PICKED,
+		);
 		dispatch(setSelectedEnoughCards(pickedCards.length === 3));
 	},
 );
 
 export const chooseCorrectCard = createAction(
 	'CHOOSE_CORRECT_CARD',
-	(selectedCards: CardInfo[]) => (dispatch: Dispatch, getState: ()=> GlobalState) => {
-		const {
-			game: { cardsOfDeck, scoredCards },
-		} = getState();
-
-		dispatch(moveCardsToScoredList(selectedCards))
+	(selectedCards: CardInfo[]) => (dispatch: Dispatch, getState: () => GlobalState) => {
+		dispatch(moveCardsToScoredList(selectedCards));
 		dispatch(dealCard());
+	},
+);
 
-	}
-)
+export const drawCardsOfDeck = createAction(
+	'DRAW_CARDS_OF_DECK',
+	(
+		fabricRef: React.MutableRefObject<fabric.Canvas | null>,
+		drawFn: (card: CardInfo, index: number) => void,
+	) =>
+	(_: Dispatch, getState: () => GlobalState) => {
+		const {
+			game: { cardsOfDeck },
+		} = getState();
+		fabricRef.current?.clear();
+		cardsOfDeck.forEach(drawFn);
+	},
+);
 
-export const chooseErrorCard = createAction(
-	'CHOOSE_ERROR_CARD',
-	(selectedCards: CardInfo[]) => {
-
-	}
-)
+export const chooseErrorCard = createAction('CHOOSE_ERROR_CARD', (selectedCards: CardInfo[]) => {});
 
 export const reducer = {
 	game: handleActions<State, any>(
@@ -290,7 +304,7 @@ export const reducer = {
 			}),
 			SET_SELECTED_ENOUGH_CARDS: (state: State, action: Action<boolean>) => ({
 				...state,
-				isSelectedEnoughCards: action.payload
+				isSelectedEnoughCards: action.payload,
 			}),
 			// CHOOSE_CORRECT_CARD: (state: State, action: Action<Partial<State>>) => ({
 			// 	...state,
@@ -316,7 +330,8 @@ const gameActionMap = {
 	updateCardStatus,
 	moveCardsToScoredList,
 	selectedCard,
-	chooseCorrectCard
+	chooseCorrectCard,
+	drawCardsOfDeck,
 };
 
 type GameSelector = ReturnType<typeof gameSelector>;
