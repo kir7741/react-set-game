@@ -70,6 +70,26 @@ const setPlayer = createAction(
 	},
 );
 
+export const addScoreToPlayer = createAction (
+	'ADD_SCORE_TO_PLAYER',
+	() => (dispatch: Dispatch, getState: () => GlobalState) => {
+		const {
+			player: { playerList }
+		} = getState();
+
+		const playinngPlayer = playerList.find((playerInfo) => playerInfo.playingStatus);
+
+		if (playinngPlayer) {
+			const newPlayer: PlayerInfo = {
+				...playinngPlayer,
+				score: playinngPlayer.score + 3
+			};
+			dispatch(setPlayer(newPlayer));
+		}
+
+	}
+)
+
 export const defaultState: State = {
 	playerList: [],
 };
@@ -115,6 +135,7 @@ const playerActionMap = {
 	initialPlayer,
 	removePlayer,
 	setPlayer,
+	addScoreToPlayer,
 };
 
 type PlayerSelector = ReturnType<typeof playerSelector>;

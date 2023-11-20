@@ -10,6 +10,7 @@ import { FillType } from '../enum/fill-type.enum';
 import { ShapeType } from '../enum/shape-type.enum';
 import { CardStatusType } from '../enum/card-status-type.enum';
 import { checkSet } from '../util/helper/check-set';
+import { addScoreToPlayer } from './player';
 
 export interface State {
 	/**
@@ -43,6 +44,8 @@ export interface State {
 	 * @memberof State
 	 */
 	isSelectedEnoughCards: boolean;
+
+	
 }
 
 export const defaultState: State = {
@@ -156,6 +159,10 @@ export const dealCard = createAction(
 			check([], 0);
 		}
 
+		if (returnPileOfCards.length < 69) {
+			console.log('遊戲結束');
+		}
+
 		if (!isFoundSet && returnPileOfCards.length === 0) {
 			// TODO:遊戲結束
 			console.log('遊戲結束');
@@ -229,7 +236,6 @@ export const setSelectedEnoughCards = createAction(
 export const selectedCard = createAction(
 	'SELECTED_CARD',
 	(cardId: string, status: CardStatusType) => (dispatch: Dispatch, getState: () => GlobalState) => {
-		// TODO: 重取資料 IMPORTANT FIRST!!!!!!!!!!!!
 		const {
 			game: { cardsOfDeck: originCardsOfDeck },
 		} = getState();
@@ -259,6 +265,7 @@ export const chooseCorrectCard = createAction(
 	'CHOOSE_CORRECT_CARD',
 	(selectedCards: CardInfo[]) => (dispatch: Dispatch, getState: () => GlobalState) => {
 		dispatch(moveCardsToScoredList(selectedCards));
+		dispatch(addScoreToPlayer());
 		dispatch(dealCard());
 	},
 );
