@@ -70,25 +70,40 @@ const setPlayer = createAction(
 	},
 );
 
-export const addScoreToPlayer = createAction (
+export const addScoreToPlayer = createAction(
 	'ADD_SCORE_TO_PLAYER',
 	() => (dispatch: Dispatch, getState: () => GlobalState) => {
 		const {
-			player: { playerList }
+			player: { playerList },
 		} = getState();
 
-		const playinngPlayer = playerList.find((playerInfo) => playerInfo.playingStatus);
+		const playinngPlayer = playerList.find(playerInfo => playerInfo.playingStatus);
 
 		if (playinngPlayer) {
 			const newPlayer: PlayerInfo = {
 				...playinngPlayer,
-				score: playinngPlayer.score + 3
+				score: playinngPlayer.score + 3,
 			};
 			dispatch(setPlayer(newPlayer));
 		}
+	},
+);
 
-	}
-)
+const clearAllPlayerScore = createAction(
+	'CLEAR_ALL_PLAYER_SCORE',
+	() => (dispatch: Dispatch, getState: () => GlobalState) => {
+		const {
+			player: { playerList },
+		} = getState();
+
+		const newPlayerList = playerList.map(playerInfo => ({
+			...playerInfo,
+			score: 0,
+		}));
+
+		return newPlayerList;
+	},
+);
 
 export const defaultState: State = {
 	playerList: [],
@@ -121,6 +136,10 @@ export const reducer = {
 					playerList: [...action.payload],
 				};
 			},
+			CLEAR_ALL_PLAYER_SCORE: (state: State, action: Action<PlayerInfo[]>) => ({
+				...state,
+				playerList: [...action.payload],
+			}),
 		},
 		defaultState,
 	),
@@ -136,6 +155,7 @@ const playerActionMap = {
 	removePlayer,
 	setPlayer,
 	addScoreToPlayer,
+	clearAllPlayerScore,
 };
 
 type PlayerSelector = ReturnType<typeof playerSelector>;

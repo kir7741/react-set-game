@@ -1,5 +1,6 @@
 import { Dispatch } from 'redux';
 import { Action, createAction, handleActions } from 'redux-actions';
+import { NavigateFunction } from 'react-router-dom';
 import { useRedux } from '../util/hook/redux';
 import { GlobalState } from './reducers';
 
@@ -45,7 +46,7 @@ export interface State {
 	 */
 	isSelectedEnoughCards: boolean;
 
-	
+	isGameOver: boolean;
 }
 
 export const defaultState: State = {
@@ -53,6 +54,7 @@ export const defaultState: State = {
 	cardsOfDeck: [],
 	scoredCards: [],
 	isSelectedEnoughCards: false,
+	isGameOver: false,
 };
 
 /**
@@ -159,18 +161,14 @@ export const dealCard = createAction(
 			check([], 0);
 		}
 
-		if (returnPileOfCards.length < 69) {
-			console.log('遊戲結束');
-		}
-
-		if (!isFoundSet && returnPileOfCards.length === 0) {
-			// TODO:遊戲結束
-			console.log('遊戲結束');
-		}
+		const isGameOver = returnPileOfCards.length < 69;
+		// TODO:為了測試先使用上面條件
+		// const isGameOver = !isFoundSet && returnPileOfCards.length === 0;
 
 		return {
 			pileOfCards: returnPileOfCards,
 			cardsOfDeck: returnCardOfDeck,
+			isGameOver,
 		};
 	},
 );
@@ -273,19 +271,32 @@ export const chooseCorrectCard = createAction(
 export const drawCardsOfDeck = createAction(
 	'DRAW_CARDS_OF_DECK',
 	(
-		fabricRef: React.MutableRefObject<fabric.Canvas | null>,
-		drawFn: (card: CardInfo, index: number) => void,
-	) =>
-	(_: Dispatch, getState: () => GlobalState) => {
-		const {
-			game: { cardsOfDeck },
-		} = getState();
-		fabricRef.current?.clear();
-		cardsOfDeck.forEach(drawFn);
-	},
+			fabricRef: React.MutableRefObject<fabric.Canvas | null>,
+			drawFn: (card: CardInfo, index: number) => void,
+		) =>
+		(_: Dispatch, getState: () => GlobalState) => {
+			const {
+				game: { cardsOfDeck },
+			} = getState();
+			fabricRef.current?.clear();
+			cardsOfDeck.forEach(drawFn);
+		},
 );
 
 export const chooseErrorCard = createAction('CHOOSE_ERROR_CARD', (selectedCards: CardInfo[]) => {});
+
+const endGame = createAction(
+	'END_GAME',
+	(navigation: NavigateFunction) => (_: Dispatch, getState: () => GlobalState) => {
+		const {
+			game: { isGameOver }
+		} = getState();
+
+		if (isGameOver) {
+			navigation('/score');
+		}
+	},
+);
 
 export const reducer = {
 	game: handleActions<State, any>(
@@ -294,11 +305,13 @@ export const reducer = {
 				...state,
 				pileOfCards: [...action.payload],
 				cardsOfDeck: [],
+				scoredCards: [],
 			}),
 			DEAL_THE_CARD: (state: State, action: Action<State>) => ({
 				...state,
 				pileOfCards: [...action.payload.pileOfCards],
 				cardsOfDeck: [...action.payload.cardsOfDeck],
+				isGameOver: action.payload.isGameOver,
 			}),
 			UPDATE_CARD_STATUS: (state: State, action: Action<CardInfo[]>) => ({
 				...state,
@@ -339,6 +352,7 @@ const gameActionMap = {
 	selectedCard,
 	chooseCorrectCard,
 	drawCardsOfDeck,
+	endGame,
 };
 
 type GameSelector = ReturnType<typeof gameSelector>;

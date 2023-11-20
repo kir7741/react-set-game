@@ -5,6 +5,7 @@ import { Dispatch } from 'redux';
 
 import Home from '../pages/Home/Home';
 import Game from '../pages/Game/Game';
+import Score from '../pages/Score/Score';
 
 import { initialPlayer } from '../models/player';
 import { initialPileOfCards, dealCard } from '../models/game';
@@ -35,7 +36,7 @@ const Router: React.FC = () => {
 		},
 		{
 			path: 'score',
-			element: <div>score</div>,
+			element: <Score />,
 		},
 	]);
 

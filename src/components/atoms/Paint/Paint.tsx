@@ -1,4 +1,5 @@
 import React, { HTMLAttributes, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CardInfo } from '../../../interface/card-info.interface';
 import { AmountType } from '../../../enum/amount-type.enum';
 import { ColorType } from '../../../enum/color-type.enum';
@@ -57,9 +58,10 @@ const Paint: React.FC<PaintProperty> = ({
 }) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [count, setCount] = useState<number>(0);
+	const navigation = useNavigate();
 	const [
 		{ pileOfCards, cardsOfDeck, isSelectedEnoughCards },
-		{ updateCardStatus, moveCardsToScoredList, selectedCard, chooseCorrectCard, drawCardsOfDeck },
+		{ updateCardStatus, moveCardsToScoredList, selectedCard, chooseCorrectCard, drawCardsOfDeck, endGame },
 	] = useGame();
 
 	const [{ fabricRef }, { toggleCardSelected, drawCard }] = useCanvas(canvasRef, {
@@ -98,6 +100,7 @@ const Paint: React.FC<PaintProperty> = ({
 							// 3. 若可以得分則更新卡片狀態，重新繪製牌桌上的卡片，直到排堆中沒有卡片
 							chooseCorrectCard(pickedCard);
 							drawCardsOfDeck(fabricRef, drawFn);
+							endGame(navigation);
 							return;
 						} else {
 							// 沒選擇正確的處理
