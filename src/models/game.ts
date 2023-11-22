@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux';
+import { fabric } from 'fabric';
 import { Action, createAction, handleActions } from 'redux-actions';
 import { NavigateFunction } from 'react-router-dom';
 import { useRedux } from '../util/hook/redux';
@@ -46,7 +47,22 @@ export interface State {
 	 */
 	isSelectedEnoughCards: boolean;
 
+	/**
+	 * 是否結束遊戲
+	 *
+	 * @type {boolean}
+	 * @memberof State
+	 */
 	isGameOver: boolean;
+
+	/**
+	 * 當前正在玩遊戲的玩家 id
+	 *
+	 * @type {string}
+	 * @memberof State
+	 */
+	currentPlayerId: string;
+
 }
 
 export const defaultState: State = {
@@ -55,6 +71,7 @@ export const defaultState: State = {
 	scoredCards: [],
 	isSelectedEnoughCards: false,
 	isGameOver: false,
+	currentPlayerId: ''
 };
 
 /**
@@ -272,14 +289,17 @@ export const drawCardsOfDeck = createAction(
 	'DRAW_CARDS_OF_DECK',
 	(
 			fabricRef: React.MutableRefObject<fabric.Canvas | null>,
-			drawFn: (card: CardInfo, index: number) => void,
+			drawFn: (card: CardInfo, index: number, getState: () => GlobalState) => void,
 		) =>
 		(_: Dispatch, getState: () => GlobalState) => {
+			// TODO: 看看有沒有更好的方法，不用傳 getState 的方法
 			const {
 				game: { cardsOfDeck },
 			} = getState();
 			fabricRef.current?.clear();
-			cardsOfDeck.forEach(drawFn);
+			cardsOfDeck.forEach((cardInfo, index) => {
+				drawFn(cardInfo, index, getState);
+			});
 		},
 );
 
@@ -298,6 +318,10 @@ const endGame = createAction(
 	},
 );
 
+const setCurrentPlayerId = createAction(
+	'SET_CURRENT_PLAYER_ID', 
+	(id: string) => id
+)
 export const reducer = {
 	game: handleActions<State, any>(
 		{
@@ -326,6 +350,10 @@ export const reducer = {
 				...state,
 				isSelectedEnoughCards: action.payload,
 			}),
+			SET_CURRENT_PLAYER_ID: (state: State, action: Action<string>) => ({
+				...state,
+				currentPlayerId: action.payload
+			})
 			// CHOOSE_CORRECT_CARD: (state: State, action: Action<Partial<State>>) => ({
 			// 	...state,
 			// 	cardsOfDeck: action.payload.cardsOfDeck || [],
@@ -342,6 +370,7 @@ const gameSelector = (state: GlobalState) => ({
 	cardsOfDeck: state.game.cardsOfDeck,
 	scoredCards: state.game.scoredCards,
 	isSelectedEnoughCards: state.game.isSelectedEnoughCards,
+	currentPlayerId: state.game.currentPlayerId,
 });
 
 const gameActionMap = {
@@ -353,6 +382,7 @@ const gameActionMap = {
 	chooseCorrectCard,
 	drawCardsOfDeck,
 	endGame,
+	setCurrentPlayerId
 };
 
 type GameSelector = ReturnType<typeof gameSelector>;

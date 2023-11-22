@@ -1,14 +1,12 @@
 import React, { HTMLAttributes, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CardInfo } from '../../../interface/card-info.interface';
-import { AmountType } from '../../../enum/amount-type.enum';
-import { ColorType } from '../../../enum/color-type.enum';
-import { FillType } from '../../../enum/fill-type.enum';
-import { ShapeType } from '../../../enum/shape-type.enum';
 import { CardStatusType } from '../../../enum/card-status-type.enum';
 import useCanvas from '../../../util/hook/useCanvas';
 import { useGame } from '../../../models/game';
 import { checkSet } from '../../../util/helper/check-set';
+import { usePlayer } from '../../../models/player';
+import { GlobalState } from '../../../models/reducers';
 
 /**
  * 樣式的介面
@@ -26,43 +24,22 @@ interface PaintProperty extends HTMLAttributes<HTMLDivElement> {
 	 */
 	id: string;
 
-	/**
-	 * 卡片資訊
-	 *
-	 * @type {CardInfo[]}
-	 * @memberof PaintProperty
-	 */
-	cardList?: CardInfo[];
 }
 
 const Paint: React.FC<PaintProperty> = ({
-	id,
-	cardList = [
-		{
-			id: 'a',
-			amount: AmountType.ONE,
-			color: ColorType.BLUE,
-			fill: FillType.FILLED,
-			shape: ShapeType.CIRCLE,
-			status: CardStatusType.DECK,
-		},
-		{
-			id: 'a',
-			amount: AmountType.ONE,
-			color: ColorType.BLUE,
-			fill: FillType.FILLED,
-			shape: ShapeType.CIRCLE,
-			status: CardStatusType.DECK,
-		},
-	],
+	id
 }) => {
+	console.log('fuck')
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const [count, setCount] = useState<number>(0);
 	const navigation = useNavigate();
 	const [
-		{ pileOfCards, cardsOfDeck, isSelectedEnoughCards },
-		{ updateCardStatus, moveCardsToScoredList, selectedCard, chooseCorrectCard, drawCardsOfDeck, endGame },
+		{ cardsOfDeck, isSelectedEnoughCards, currentPlayerId},
+		{ selectedCard, chooseCorrectCard, drawCardsOfDeck, endGame },
 	] = useGame();
+
+	const [
+		{ playerList }
+	] = usePlayer();
 
 	const [{ fabricRef }, { toggleCardSelected, drawCard }] = useCanvas(canvasRef, {
 		width: window.innerWidth,
@@ -70,8 +47,22 @@ const Paint: React.FC<PaintProperty> = ({
 	});
 
 
-	const drawFn = (card: CardInfo, index: number) => {
+	const drawFn = (card: CardInfo, index: number, getState: () => GlobalState) => {
 		drawCard(card, index, () => {
+			const {
+				game: { currentPlayerId },
+			} = getState();
+			// TODO: 待解 playerList 為何可以成功，currentPlayerId卻無法
+			// setPlayer, setCurrentPlayerId
+			
+			// console.log('currentPlayerId', currentPlayerId)
+			// console.log('playerList', playerList)
+			if (!currentPlayerId) {
+				return;
+			}
+			// if (playerList.every((player) => !player.playingStatus)) {
+			// 	return;
+			// }
 			toggleCardSelected(card.id);
 			selectedCard(card.id, card.status);
 		});

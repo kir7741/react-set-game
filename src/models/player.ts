@@ -66,7 +66,7 @@ const setPlayer = createAction(
 
 		list[prePlayerIndex] = newPlayer;
 
-		return list.concat();
+		return [...list];
 	},
 );
 
@@ -75,9 +75,10 @@ export const addScoreToPlayer = createAction(
 	() => (dispatch: Dispatch, getState: () => GlobalState) => {
 		const {
 			player: { playerList },
+			game: { currentPlayerId }
 		} = getState();
 
-		const playinngPlayer = playerList.find(playerInfo => playerInfo.playingStatus);
+		const playinngPlayer = playerList.find(playerInfo => playerInfo.id === currentPlayerId);
 
 		if (playinngPlayer) {
 			const newPlayer: PlayerInfo = {
