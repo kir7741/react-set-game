@@ -33,7 +33,7 @@ const Paint: React.FC<PaintProperty> = ({
 	const navigation = useNavigate();
 	const [
 		{ cardsOfDeck, isSelectedEnoughCards, currentPlayerId},
-		{ selectedCard, chooseCorrectCard, drawCardsOfDeck, endGame, setCurrentPlayerId },
+		{ selectedCard, chooseCorrectCard, drawCardsOfDeck, endGame, setCurrentPlayerId, setSelectedEnoughCards },
 	] = useGame();
 
 	const [
@@ -93,6 +93,7 @@ const Paint: React.FC<PaintProperty> = ({
 							// selectedCard.forEach((card) => toggleCardSelected(card.id));
 						}
 						setCurrentPlayerId('');
+						setSelectedEnoughCards(false);
 						// 4. 否 清空，跳通知 回到選擇角色頁面
 						
 					}}
