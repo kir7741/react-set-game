@@ -9,63 +9,38 @@ import Paint from '../../components/atoms/Paint/Paint';
 import { useGame } from '../../models/game';
 
 const Game = () => {
-	const [isOpen, setIsOpen] = useState(false);
 	const [{ playerList }, { setPlayer }] = usePlayer();
-	const [{
-	},
-	{
-		setCurrentPlayerId
-	}
-	] = useGame();
-
-	useEffect(() => {
-		setIsOpen(true);
-	}, []);
-
-	useEffect(() => {
-		setIsOpen(true);
-	}, []);
+	const [{ currentPlayerId }, { setCurrentPlayerId }] = useGame();
 
 	return (
 		<>
-
 			<div className={styles['player-list']}>
-				{
-					playerList.map(playerInfo => (
-						<div key={playerInfo.id}>
-							<p>{playerInfo.name}</p>
-							<button 
-								type="button" 
+				{playerList.map(playerInfo => (
+					<div key={playerInfo.id}>
+						<p>{playerInfo.name}</p>
+						{!currentPlayerId && (
+							<button
+								type="button"
 								onClick={() => {
-
 									// TODO: 更新 player 狀態，paint拿到新狀態 => 怪異，可能是reference 引起，待複查
-									setPlayer({
-										...playerInfo,
-										playingStatus: true
-									});
-									setIsOpen(false);
-
-									// TODO: 更新 當前玩遊戲的 playerId 狀態， paint拿不到新狀態 => 正常
-									setCurrentPlayerId(playerInfo.id)
-									setIsOpen(false);
-
+									// setPlayer({
+									// 	...playerInfo,
+									// 	playingStatus: true,
+									// });
+									setCurrentPlayerId(playerInfo.id);
 								}}
 							>
 								搶答
 							</button>
-							
-						</div>
-					))
-				}
+						)}
+					</div>
+				))}
 			</div>
-
 			<div className="home">
 				<Paint id="test"></Paint>
 			</div>
-
-
-				{/* 彈窗，之後可能拿來做其他用途顯示分數之類的 */}
-		{/* 
+			{/* 彈窗，之後可能拿來做其他用途顯示分數之類的 */}
+			{/* 
 			<RaceAnswerDialog
 				isOpen={isOpen}
 				onChoosePlayer={id => {

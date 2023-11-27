@@ -178,9 +178,9 @@ export const dealCard = createAction(
 			check([], 0);
 		}
 
-		const isGameOver = returnPileOfCards.length < 69;
+		// const isGameOver = returnPileOfCards.length < 69;
 		// TODO:為了測試先使用上面條件
-		// const isGameOver = !isFoundSet && returnPileOfCards.length === 0;
+		const isGameOver = !isFoundSet && returnPileOfCards.length === 0;
 
 		return {
 			pileOfCards: returnPileOfCards,

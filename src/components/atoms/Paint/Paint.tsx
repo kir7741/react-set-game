@@ -29,12 +29,11 @@ interface PaintProperty extends HTMLAttributes<HTMLDivElement> {
 const Paint: React.FC<PaintProperty> = ({
 	id
 }) => {
-	console.log('fuck')
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const navigation = useNavigate();
 	const [
 		{ cardsOfDeck, isSelectedEnoughCards, currentPlayerId},
-		{ selectedCard, chooseCorrectCard, drawCardsOfDeck, endGame },
+		{ selectedCard, chooseCorrectCard, drawCardsOfDeck, endGame, setCurrentPlayerId },
 	] = useGame();
 
 	const [
@@ -54,9 +53,6 @@ const Paint: React.FC<PaintProperty> = ({
 			} = getState();
 			// TODO: 待解 playerList 為何可以成功，currentPlayerId卻無法
 			// setPlayer, setCurrentPlayerId
-			
-			// console.log('currentPlayerId', currentPlayerId)
-			// console.log('playerList', playerList)
 			if (!currentPlayerId) {
 				return;
 			}
@@ -92,12 +88,11 @@ const Paint: React.FC<PaintProperty> = ({
 							chooseCorrectCard(pickedCard);
 							drawCardsOfDeck(fabricRef, drawFn);
 							endGame(navigation);
-							return;
 						} else {
 							// 沒選擇正確的處理
 							// selectedCard.forEach((card) => toggleCardSelected(card.id));
 						}
-						// 移除並發牌
+						setCurrentPlayerId('');
 						// 4. 否 清空，跳通知 回到選擇角色頁面
 						
 					}}
