@@ -254,6 +254,7 @@ export const selectedCard = createAction(
 		const {
 			game: { cardsOfDeck: originCardsOfDeck },
 		} = getState();
+
 		const foundCard = originCardsOfDeck.find(card => card.id === cardId);
 
 		dispatch(

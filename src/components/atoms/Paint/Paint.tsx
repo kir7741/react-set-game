@@ -1,50 +1,41 @@
-import React, { HTMLAttributes, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CardInfo } from '../../../interface/card-info.interface';
-import { CardStatusType } from '../../../enum/card-status-type.enum';
-import useCanvas from '../../../util/hook/useCanvas';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { HTMLAttributes, forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import classnames from 'classnames';
+
 import { useGame } from '../../../models/game';
-import { checkSet } from '../../../util/helper/check-set';
-import { usePlayer } from '../../../models/player';
 import { GlobalState } from '../../../models/reducers';
+
+import useCanvas from '../../../util/hook/useCanvas';
+
+import { CardInfo } from '../../../interface/card-info.interface';
+
+import styles from './Paint.module.css';
 
 /**
  * 樣式的介面
  *
  * @interface StyleMap
  */
-interface StyleMap {}
-
-interface PaintProperty extends HTMLAttributes<HTMLDivElement> {
-	/**
-	 * 元件 id
-	 *
-	 * @type {string}
-	 * @memberof PaintProperty
-	 */
-	id: string;
-
+interface StyleMap {
+	deck: string;
 }
 
-const Paint: React.FC<PaintProperty> = ({
-	id
-}) => {
-	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const navigation = useNavigate();
-	const [
-		{ cardsOfDeck, isSelectedEnoughCards, currentPlayerId},
-		{ selectedCard, chooseCorrectCard, drawCardsOfDeck, endGame, setCurrentPlayerId, setSelectedEnoughCards },
-	] = useGame();
+interface PaintProperty extends HTMLAttributes<HTMLDivElement> {
+	styleMap?: Partial<StyleMap>;
+}
 
-	const [
-		{ playerList }
-	] = usePlayer();
+export interface PaintRefProperty {
+	redrawCardsOfDeck: () => void;
+}
+
+const Paint = forwardRef<PaintRefProperty, PaintProperty>(({ styleMap = {} }, ref) => {
+	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const [, { selectedCard, drawCardsOfDeck }] = useGame();
 
 	const [{ fabricRef }, { toggleCardSelected, drawCard }] = useCanvas(canvasRef, {
 		width: window.innerWidth,
 		height: window.innerHeight,
 	});
-
 
 	const drawFn = (card: CardInfo, index: number, getState: () => GlobalState) => {
 		drawCard(card, index, () => {
@@ -62,47 +53,27 @@ const Paint: React.FC<PaintProperty> = ({
 			toggleCardSelected(card.id);
 			selectedCard(card.id, card.status);
 		});
-	}
+	};
 
 	useEffect(() => {
 		// dependency array 有 cardsOfDeck 時，不論有沒有 clear 都無法切換狀態
 		// dependency array 有 fabricRef.current 時，沒有 clear 無法切換狀態，有 clear 要第二次才會切換狀態
 		if (fabricRef) {
-			drawCardsOfDeck(fabricRef,drawFn);
+			drawCardsOfDeck(fabricRef, drawFn);
 		}
 	}, [fabricRef]);
 
-	return (
-		<>
-			<canvas ref={canvasRef} />
-			{isSelectedEnoughCards && (
-				<button
-					type="button"
-					onClick={() => {
-						// 1. 取得使用者選取的卡片
-						const pickedCard = cardsOfDeck.filter(card => card.status === CardStatusType.PICKED);
-						// 2. 檢查卡片是否可以得分
-						if (checkSet(pickedCard)) {
+	useImperativeHandle(ref, () => ({
+		redrawCardsOfDeck: () => {
+			drawCardsOfDeck(fabricRef, drawFn);
+		},
+	}));
 
-							// 3. 若可以得分則更新卡片狀態，重新繪製牌桌上的卡片，直到排堆中沒有卡片
-							chooseCorrectCard(pickedCard);
-							drawCardsOfDeck(fabricRef, drawFn);
-							endGame(navigation);
-						} else {
-							// 沒選擇正確的處理
-							// selectedCard.forEach((card) => toggleCardSelected(card.id));
-						}
-						setCurrentPlayerId('');
-						setSelectedEnoughCards(false);
-						// 4. 否 清空，跳通知 回到選擇角色頁面
-						
-					}}
-				>
-					確定選完了嗎？
-				</button>
-			)}
-		</>
+	return (
+		<div className={classnames(styles.deck, styleMap.deck)}>
+			<canvas ref={canvasRef} />
+		</div>
 	);
-};
+});
 
 export default Paint;
