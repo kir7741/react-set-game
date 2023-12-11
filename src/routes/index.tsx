@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { createBrowserRouter, redirect, RouterProvider, useNavigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
 import Home from '../pages/Home/Home';
@@ -17,8 +17,8 @@ const homeInitLoader = (dispatch: Dispatch) => () => {
 };
 
 const gameInitLoader = (dispatch: Dispatch) => () => {
-  dispatch(initialPileOfCards());
-  dispatch(dealCard());
+	dispatch(initialPileOfCards());
+	dispatch(dealCard());
 	return null;
 };
 
