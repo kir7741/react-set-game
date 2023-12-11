@@ -26,7 +26,7 @@ const Game = () => {
 			<div className={styles['player-list']}>
 				{playerList.map(playerInfo => (
 					<div key={playerInfo.id}>
-						<p>{playerInfo.name}</p>
+						<p>{`${playerInfo.name} - ${playerInfo.score || 0} 分`} </p>
 						{!currentPlayerId && (
 							<button
 								type="button"
