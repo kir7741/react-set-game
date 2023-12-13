@@ -6,23 +6,12 @@ import { GlobalState } from './reducers';
 // Interfaces
 import { PlayerInfo } from '../interface/player-info.interface';
 
+const MIN_PLAYER_AMOUNT = 2;
+const MAX_PLAYER_AMOUNT = 8;
+
 export interface State {
 	playerList: PlayerInfo[];
 }
-
-const addPlayer = createAction(
-	'ADD_PLAYER',
-	(playerName: string) => (_: Dispatch, getState: () => GlobalState) => {
-		const playerInfo: PlayerInfo = {
-			id: Math.random() + '',
-			name: playerName,
-			score: 0,
-			playingStatus: false,
-			cards: [],
-		};
-		return [playerInfo];
-	},
-);
 
 export const initialPlayer = createAction('INITINAL_PLAYER', () => {
 	const createPlayerInfo = (): PlayerInfo => ({
@@ -36,7 +25,43 @@ export const initialPlayer = createAction('INITINAL_PLAYER', () => {
 	return [createPlayerInfo(), createPlayerInfo()];
 });
 
-const removePlayer = createAction('REMOVE_PLAYER', (playerId: string) => playerId);
+const addPlayer = createAction(
+	'ADD_PLAYER',
+	(playerName: string) => (_: Dispatch, getState: () => GlobalState) => {
+		const {
+			player: { playerList },
+		} = getState();
+
+		if (playerList.length >= MAX_PLAYER_AMOUNT) {
+			return playerList;
+		}
+
+		const playerInfo: PlayerInfo = {
+			id: Math.random() + '',
+			name: playerName,
+			score: 0,
+			playingStatus: false,
+			cards: [],
+		};
+
+		return [...playerList, playerInfo];
+	},
+);
+
+const removePlayer = createAction(
+	'REMOVE_PLAYER',
+	(playerId: string) => (_: Dispatch, getState: () => GlobalState) => {
+		const {
+			player: { playerList },
+		} = getState();
+
+		if (playerList.length <= MIN_PLAYER_AMOUNT) {
+			return playerList;
+		}
+
+		return playerList.filter(info => info.id !== playerId);
+	},
+);
 
 const setPlayer = createAction(
 	'SET_PLAYER',
@@ -75,7 +100,7 @@ export const addScoreToPlayer = createAction(
 	() => (dispatch: Dispatch, getState: () => GlobalState) => {
 		const {
 			player: { playerList },
-			game: { currentPlayerId }
+			game: { currentPlayerId },
 		} = getState();
 
 		const playinngPlayer = playerList.find(playerInfo => playerInfo.id === currentPlayerId);
@@ -116,7 +141,7 @@ export const reducer = {
 			ADD_PLAYER: (state: State, action: Action<PlayerInfo[]>) => {
 				return {
 					...state,
-					playerList: [...state.playerList, ...action.payload],
+					playerList: action.payload,
 				};
 			},
 			INITINAL_PLAYER: (state: State, action: Action<PlayerInfo[]>) => {
@@ -125,10 +150,10 @@ export const reducer = {
 					playerList: [...action.payload],
 				};
 			},
-			REMOVE_PLAYER: (state: State, action: Action<string>) => {
+			REMOVE_PLAYER: (state: State, action: Action<PlayerInfo[]>) => {
 				return {
 					...state,
-					playerList: state.playerList.filter(info => info.id !== action.payload),
+					playerList: action.payload,
 				};
 			},
 			SET_PLAYER: (state: State, action: Action<PlayerInfo[]>) => {

@@ -12,7 +12,10 @@ const GameGuard: React.FC<GameGuardProperty> = ({ children }) => {
 	const navigation = useNavigate();
 
   useEffect(() => {
-    if (playerList.some((playerInfo) => !playerInfo.name)) {
+    if (
+      playerList.length <= 0 ||
+      playerList.some((playerInfo) => !playerInfo.name)
+    ) {
       navigation('/');
     }
   }, [])
