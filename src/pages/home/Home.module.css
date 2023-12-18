@@ -59,7 +59,7 @@
     background-position: center;
     background-size: cover;
 
-    & input {
+    & > input {
       height: 50px;
       font-size: 24px;
       padding: 4px 32px;
@@ -67,7 +67,7 @@
       border: 0px;
     }
 
-    & button {
+    & > button {
       position: absolute;
       top: -5px;
       right: -5px;
@@ -94,7 +94,7 @@
     grid-gap: 16px;
     margin-top: 32px;
 
-    & button {
+    & > button {
       border: none;
       border-radius: 5px;
       height: 50px;

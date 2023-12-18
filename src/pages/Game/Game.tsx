@@ -20,28 +20,31 @@ const Game = () => {
 		{ cardsOfDeck, isSelectedEnoughCards, currentPlayerId },
 		{ selectedCard, chooseCorrectCard, endGame, setCurrentPlayerId, setSelectedEnoughCards },
 	] = useGame();
-
 	return (
 		<>
 			<div className={styles['player-list']}>
 				{playerList.map(playerInfo => (
 					<div key={playerInfo.id}>
-						<p>{`${playerInfo.name} - ${playerInfo.score || 0} 分`} </p>
-						{!currentPlayerId && (
-							<button
-								type="button"
-								onClick={() => {
-									// TODO: 更新 player 狀態，paint拿到新狀態 => 怪異，可能是reference 引起，待複查
-									// setPlayer({
-									// 	...playerInfo,
-									// 	playingStatus: true,
-									// });
-									setCurrentPlayerId(playerInfo.id);
-								}}
-							>
-								搶答
-							</button>
-						)}
+						<div className={styles['player-board']}> 
+							<label>{`${playerInfo.name} - ${playerInfo.score || 0} 分`} </label>
+							{!currentPlayerId && (
+								<button
+									className={styles['c-button']}
+									type="button"
+									onClick={() => {
+										// TODO: 更新 player 狀態，paint拿到新狀態 => 怪異，可能是reference 引起，待複查
+										// setPlayer({
+										// 	...playerInfo,
+										// 	playingStatus: true,
+										// });
+										setCurrentPlayerId(playerInfo.id);
+									}}
+								>
+									搶答
+								</button>
+							)}
+						</div>
+
 					</div>
 				))}
 			</div>
