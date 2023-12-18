@@ -32,7 +32,7 @@ const Home = () => {
 								type="button"
 								onClick={() => removePlayer(info.id)}
 							>
-								-
+								x
 							</Button>
 						</div>
 					))}
