@@ -15,10 +15,9 @@ export interface State {
 
 export const initialPlayer = createAction('INITINAL_PLAYER', () => {
 	const createPlayerInfo = (): PlayerInfo => ({
-		id: Math.random() + '',
+		id: `${Math.random()}`,
 		name: '',
 		score: 0,
-		playingStatus: false,
 		cards: [],
 	});
 
@@ -37,10 +36,9 @@ const addPlayer = createAction(
 		}
 
 		const playerInfo: PlayerInfo = {
-			id: Math.random() + '',
+			id: `${Math.random()}`,
 			name: playerName,
 			score: 0,
-			playingStatus: false,
 			cards: [],
 		};
 
@@ -83,9 +81,6 @@ const setPlayer = createAction(
 			id: prePlayer.id,
 			name: hasKey('name') ? info.name || '' : prePlayer.name,
 			score: hasKey('score') ? info.score || 0 : prePlayer.score,
-			playingStatus: hasKey('playingStatus')
-				? info.playingStatus || false
-				: prePlayer.playingStatus,
 			cards: hasKey('cards') ? info.cards || [] : prePlayer.cards,
 		};
 

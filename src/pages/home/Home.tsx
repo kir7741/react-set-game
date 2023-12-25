@@ -9,7 +9,6 @@ import styles from './Home.module.css';
 
 const Home = () => {
 	const navigate = useNavigate();
-
 	const [{ playerList }, { addPlayer, removePlayer, setPlayer }] = usePlayer();
 
 	return (

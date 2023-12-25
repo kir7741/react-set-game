@@ -33,14 +33,6 @@ export interface PlayerInfo {
   score: number;
 
   /**
-   * 玩家是否正在遊玩
-   *
-   * @type {boolean}
-   * @memberof PlayerInfo
-   */
-  playingStatus: boolean;
-
-  /**
    * 持有牌
    *
    * @type {CardInfo[]}

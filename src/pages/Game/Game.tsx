@@ -32,11 +32,6 @@ const Game = () => {
 									className={styles['c-button']}
 									type="button"
 									onClick={() => {
-										// TODO: 更新 player 狀態，paint拿到新狀態 => 怪異，可能是reference 引起，待複查
-										// setPlayer({
-										// 	...playerInfo,
-										// 	playingStatus: true,
-										// });
 										setCurrentPlayerId(playerInfo.id);
 									}}
 								>

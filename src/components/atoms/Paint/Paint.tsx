@@ -42,14 +42,9 @@ const Paint = forwardRef<PaintRefProperty, PaintProperty>(({ styleMap = {} }, re
 			const {
 				game: { currentPlayerId },
 			} = getState();
-			// TODO: 待解 playerList 為何可以成功，currentPlayerId卻無法
-			// setPlayer, setCurrentPlayerId
 			if (!currentPlayerId) {
 				return;
 			}
-			// if (playerList.every((player) => !player.playingStatus)) {
-			// 	return;
-			// }
 			toggleCardSelected(card.id);
 			selectedCard(card.id, card.status);
 		});
