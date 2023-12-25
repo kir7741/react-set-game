@@ -79,9 +79,9 @@ export const defaultState: State = {
  */
 export const initialPileOfCards = createAction('INITIAL_PILE_OF_CARDS', () => {
 	const amountList = [AmountType.ONE, AmountType.TWO, AmountType.THREE];
-	const colorList = [ColorType.RED, ColorType.GREEN, ColorType.BLUE];
-	const fillList = [FillType.TRANSPARENT, FillType.FILLED, FillType.SLASH];
-	const shapeList = [ShapeType.CIRCLE, ShapeType.SQUARE, ShapeType.TRIANGLE];
+	const colorList = [ColorType.RED, ColorType.GREEN, ColorType.PURPLE];
+	const fillList = [FillType.TRANSPARENT, FillType.FILLED, FillType.GRADIENT];
+	const shapeList = [ShapeType.OVAL, ShapeType.DIAMOND, ShapeType.WAVE];
 	const pileOfCards: CardInfo[] = [];
 
 	// 生成牌組

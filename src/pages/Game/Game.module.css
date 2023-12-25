@@ -12,6 +12,7 @@
 .player-list {
   display: grid;
   grid-auto-flow: column;
+  margin-bottom: 1rem;
 
   & .player-board {
     display: grid;

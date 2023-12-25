@@ -9,16 +9,16 @@ export enum ColorType {
   /**
    * 紅色
    */
-  RED = 1,
+  RED = 'red',
 
   /**
    * 綠色
    */
-  GREEN = 2,
+  GREEN = 'green',
 
   /**
    * 藍色
    */
-  BLUE = 3,
+  PURPLE = 'purple',
   
 }

@@ -58,7 +58,7 @@ const useCanvas = (
 			case ColorType.GREEN:
 				color = '#24af3b';
 				break;
-			case ColorType.BLUE:
+			case ColorType.PURPLE:
 				color = '#420a8c';
 				break;
 		}
@@ -167,7 +167,7 @@ const useCanvas = (
 		let graphic = null;
 
 		switch (cardInfo.shape) {
-			case ShapeType.CIRCLE:
+			case ShapeType.OVAL:
 				switch (cardInfo.fill) {
 					case FillType.TRANSPARENT:
 						graphic = new fabric.Circle({
@@ -193,7 +193,7 @@ const useCanvas = (
 						});
 						break;
 
-					case FillType.SLASH:
+					case FillType.GRADIENT:
 						graphic = [1, 2, 3].reduce(
 							(pre: any, cur) => {
 								return new fabric.Group([
@@ -224,7 +224,7 @@ const useCanvas = (
 				}
 
 				break;
-			case ShapeType.TRIANGLE:
+			case ShapeType.WAVE:
 				switch (cardInfo.fill) {
 					case FillType.TRANSPARENT:
 						graphic = new fabric.Triangle({
@@ -254,7 +254,7 @@ const useCanvas = (
 						});
 						break;
 
-					case FillType.SLASH:
+					case FillType.GRADIENT:
 						graphic = [1, 2, 3, 4].reduce(
 							(pre: any, cur) => {
 								const unit = +cur * 5;
@@ -290,7 +290,7 @@ const useCanvas = (
 				}
 
 				break;
-			case ShapeType.SQUARE:
+			case ShapeType.DIAMOND:
 				switch (cardInfo.fill) {
 					case FillType.TRANSPARENT:
 						graphic = new fabric.Rect({
@@ -318,7 +318,7 @@ const useCanvas = (
 						});
 						break;
 
-					case FillType.SLASH:
+					case FillType.GRADIENT:
 						graphic = [1, 2, 3].reduce(
 							(pre: any, cur) => {
 								return new fabric.Group([

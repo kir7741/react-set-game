@@ -7,18 +7,18 @@
 export enum ShapeType {
 
   /**
-   * 圓形
+   * 橢圓形
    */
-  CIRCLE = 1,
+  OVAL = 'oval',
 
   /**
-   * 矩形
+   * 菱形
    */
-  SQUARE = 2,
+  DIAMOND = 'diamond',
 
   /**
-   * 三角形
+   * 波浪形
    */
-  TRIANGLE = 3,
-  
+  WAVE = 'wave',
+
 }

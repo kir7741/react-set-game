@@ -5,20 +5,18 @@
  * @enum {number}
  */
 export enum FillType {
+	/**
+	 * 透明未填色
+	 */
+	TRANSPARENT = 'transparent',
 
-  /**
-   * 透明未填色
-   */
-  TRANSPARENT = 1,
+	/**
+	 * 全部塗滿
+	 */
+	FILLED = 'filled',
 
-  /**
-   * 全部塗滿
-   */
-  FILLED = 2,
-  
-  /**
-   * 線
-   */
-  SLASH = 3
-  
+	/**
+	 * 線
+	 */
+	GRADIENT = 'gradient',
 }
