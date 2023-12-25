@@ -63,7 +63,7 @@ const removePlayer = createAction(
 
 const setPlayer = createAction(
 	'SET_PLAYER',
-	(info: Partial<PlayerInfo>) => (dispatch: Dispatch, getState: () => GlobalState) => {
+	(info: Partial<PlayerInfo>) => (_: Dispatch, getState: () => GlobalState) => {
 		const {
 			player: { playerList: list },
 		} = getState();
@@ -112,7 +112,7 @@ export const addScoreToPlayer = createAction(
 
 const clearAllPlayerScore = createAction(
 	'CLEAR_ALL_PLAYER_SCORE',
-	() => (dispatch: Dispatch, getState: () => GlobalState) => {
+	() => (_: Dispatch, getState: () => GlobalState) => {
 		const {
 			player: { playerList },
 		} = getState();
