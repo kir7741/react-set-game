@@ -16,9 +16,10 @@ const Home = () => {
 			<div className={styles.logo}>Game Set</div>
 			<form className={styles.form}>
 				<div className={styles['player-list']}>
-					{playerList.map(info => (
+					{playerList.map((info, index) => (
 						<div key={info.id} className={styles['input-box']}>
 							<Input
+								tabIndex={index}
 								value={info.name}
 								onChangeValue={(val: string) => {
 									setPlayer({

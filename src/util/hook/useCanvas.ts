@@ -5,63 +5,63 @@ import { CardInfo } from '../../interface/card-info.interface';
 import { ColorType } from '../../enum/color-type.enum';
 import { ShapeType } from '../../enum/shape-type.enum';
 import { FillType } from '../../enum/fill-type.enum';
-import rtw from  '../../../src/assets/img/red-transparent-wave.svg';
-import rto from  '../../../src/assets/img/red-transparent-oval.svg';
-import rtd from  '../../../src/assets/img/red-transparent-diamond.svg';
-import rgw from  '../../../src/assets/img/red-gradient-wave.svg';
-import rgo from  '../../../src/assets/img/red-gradient-oval.svg';
-import rgd from  '../../../src/assets/img/red-gradient-diamond.svg';
-import rfw from  '../../../src/assets/img/red-filled-wave.svg';
-import rfo from  '../../../src/assets/img/red-filled-oval.svg';
-import rfd from  '../../../src/assets/img/red-filled-diamond.svg';
-import ptw from  '../../../src/assets/img/purple-transparent-wave.svg';
-import pto from  '../../../src/assets/img/purple-transparent-oval.svg';
-import ptd from  '../../../src/assets/img/purple-transparent-diamond.svg';
-import pgw from  '../../../src/assets/img/purple-gradient-wave.svg';
-import pgo from  '../../../src/assets/img/purple-gradient-oval.svg';
-import pgd from  '../../../src/assets/img/purple-gradient-diamond.svg';
-import pfw from  '../../../src/assets/img/purple-filled-wave.svg';
-import pfo from  '../../../src/assets/img/purple-filled-oval.svg';
-import pfd from  '../../../src/assets/img/purple-filled-diamond.svg';
-import gtw from  '../../../src/assets/img/green-transparent-wave.svg';
-import gto from  '../../../src/assets/img/green-transparent-oval.svg';
-import gtd from  '../../../src/assets/img/green-transparent-diamond.svg';
-import ggw from  '../../../src/assets/img/green-gradient-wave.svg';
-import ggo from  '../../../src/assets/img/green-gradient-oval.svg';
-import ggt from  '../../../src/assets/img/green-gradient-diamond.svg';
-import gfw from  '../../../src/assets/img/green-filled-wave.svg';
-import gfo from  '../../../src/assets/img/green-filled-oval.svg';
-import gfd from  '../../../src/assets/img/green-filled-diamond.svg';
+import rtw from '../../../src/assets/img/red-transparent-wave.svg';
+import rto from '../../../src/assets/img/red-transparent-oval.svg';
+import rtd from '../../../src/assets/img/red-transparent-diamond.svg';
+import rgw from '../../../src/assets/img/red-gradient-wave.svg';
+import rgo from '../../../src/assets/img/red-gradient-oval.svg';
+import rgd from '../../../src/assets/img/red-gradient-diamond.svg';
+import rfw from '../../../src/assets/img/red-filled-wave.svg';
+import rfo from '../../../src/assets/img/red-filled-oval.svg';
+import rfd from '../../../src/assets/img/red-filled-diamond.svg';
+import ptw from '../../../src/assets/img/purple-transparent-wave.svg';
+import pto from '../../../src/assets/img/purple-transparent-oval.svg';
+import ptd from '../../../src/assets/img/purple-transparent-diamond.svg';
+import pgw from '../../../src/assets/img/purple-gradient-wave.svg';
+import pgo from '../../../src/assets/img/purple-gradient-oval.svg';
+import pgd from '../../../src/assets/img/purple-gradient-diamond.svg';
+import pfw from '../../../src/assets/img/purple-filled-wave.svg';
+import pfo from '../../../src/assets/img/purple-filled-oval.svg';
+import pfd from '../../../src/assets/img/purple-filled-diamond.svg';
+import gtw from '../../../src/assets/img/green-transparent-wave.svg';
+import gto from '../../../src/assets/img/green-transparent-oval.svg';
+import gtd from '../../../src/assets/img/green-transparent-diamond.svg';
+import ggw from '../../../src/assets/img/green-gradient-wave.svg';
+import ggo from '../../../src/assets/img/green-gradient-oval.svg';
+import ggt from '../../../src/assets/img/green-gradient-diamond.svg';
+import gfw from '../../../src/assets/img/green-filled-wave.svg';
+import gfo from '../../../src/assets/img/green-filled-oval.svg';
+import gfd from '../../../src/assets/img/green-filled-diamond.svg';
 
 const imgMap = {
-	'red-transparent-wave' : rtw,
-	'red-transparent-oval' : rto,
-	'red-transparent-diamond' : rtd,
-	'red-gradient-wave' : rgw,
-	'red-gradient-oval' : rgo,
-	'red-gradient-diamond' : rgd,
-	'red-filled-wave' : rfw,
-	'red-filled-oval' : rfo,
-	'red-filled-diamond' : rfd,
-	'purple-transparent-wave' : ptw,
-	'purple-transparent-oval' : pto,
-	'purple-transparent-diamond' : ptd,
-	'purple-gradient-wave' : pgw,
-	'purple-gradient-oval' : pgo,
-	'purple-gradient-diamond' : pgd,
-	'purple-filled-wave' : pfw,
-	'purple-filled-oval' : pfo,
-	'purple-filled-diamond' : pfd,
-	'green-transparent-wave' : gtw,
-	'green-transparent-oval' : gto,
-	'green-transparent-diamond' : gtd,
-	'green-gradient-wave' : ggw,
-	'green-gradient-oval' : ggo,
-	'green-gradient-diamond' : ggt,
-	'green-filled-wave' : gfw,
-	'green-filled-oval' : gfo,
-	'green-filled-diamond' : gfd
-}
+	'red-transparent-wave': rtw,
+	'red-transparent-oval': rto,
+	'red-transparent-diamond': rtd,
+	'red-gradient-wave': rgw,
+	'red-gradient-oval': rgo,
+	'red-gradient-diamond': rgd,
+	'red-filled-wave': rfw,
+	'red-filled-oval': rfo,
+	'red-filled-diamond': rfd,
+	'purple-transparent-wave': ptw,
+	'purple-transparent-oval': pto,
+	'purple-transparent-diamond': ptd,
+	'purple-gradient-wave': pgw,
+	'purple-gradient-oval': pgo,
+	'purple-gradient-diamond': pgd,
+	'purple-filled-wave': pfw,
+	'purple-filled-oval': pfo,
+	'purple-filled-diamond': pfd,
+	'green-transparent-wave': gtw,
+	'green-transparent-oval': gto,
+	'green-transparent-diamond': gtd,
+	'green-gradient-wave': ggw,
+	'green-gradient-oval': ggo,
+	'green-gradient-diamond': ggt,
+	'green-filled-wave': gfw,
+	'green-filled-oval': gfo,
+	'green-filled-diamond': gfd,
+};
 
 type CanvasMap = {
 	fabricRef: React.MutableRefObject<fabric.Canvas | null>;
@@ -72,8 +72,8 @@ type CanvasActionMap = {
 	toggleCardSelected: (id: string) => void;
 };
 
-const cardWidth = 75;
-const cardHeight = 120;
+const cardWidth = 120;
+const cardHeight = 200;
 
 const useCanvas = (
 	canvasRef: React.RefObject<HTMLCanvasElement>,
@@ -161,7 +161,11 @@ const useCanvas = (
 	 * @param cardInfo - 卡片資訊
 	 * @param index - 索引位置
 	 */
-	const drawCard =  async (cardInfo: CardInfo, index: number, clickHandler = () => {}): Promise<fabric.Group>  => {
+	const drawCard = async (
+		cardInfo: CardInfo,
+		index: number,
+		clickHandler = () => {},
+	): Promise<fabric.Group> => {
 		const border = drawCardBorder(index);
 		const text = drawNumberText(cardInfo, index);
 		const shape = await drawShape(cardInfo, index);
@@ -214,225 +218,23 @@ const useCanvas = (
 
 	/**
 	 * 繪出圖型（顏色、填充、形狀）
-	 * TODO: 調位置
 	 *
 	 * @param cardInfo - 卡片資訊
 	 * @param index - 索引位置
 	 * @returns
 	 */
-	const drawShape = async (cardInfo: CardInfo, index: number) => {
-		const color = getColor(cardInfo.color);
-		let graphic = null;
-		let fileUrl = '../../assets/img/';
-
-		const draw = (info: CardInfo) =>
-		new Promise((resolve, reject) => {
-			// const img = new Image();
-			// console.log('test', test);
-			// img.src = imgMap[`${info.color}-${info.fill}-${info.shape}`];
-			// img.onload = (e) => {
-			// 	console.log(img);
-			// }
-			// let fileUrl1 = '../../assets/img/';
-			// fileUrl1 += `${info.color}-${info.fill}-${info.shape}.svg`;
-			fabric.Image.fromURL(imgMap[`${info.color}-${info.fill}-${info.shape}`], function (oImg) {
-				console.log(oImg, '1111');
-				resolve(oImg);
+	const drawShape = async (cardInfo: CardInfo, index: number): Promise<fabric.Object> => {
+		const draw = (info: CardInfo): Promise<fabric.Object> =>
+			new Promise((resolve, reject) => {
+				fabric.Image.fromURL(imgMap[`${info.color}-${info.fill}-${info.shape}`], function (oImg) {
+					oImg.top = 75 + Math.floor(index / 6) * (cardHeight + 20);
+					oImg.left = 165 + (index % 6) * (cardWidth + 20);
+					oImg.scaleX = 0.8;
+					oImg.scaleY = 0.8;
+					resolve(oImg);
+				});
 			});
-		});
-
-		switch (cardInfo.shape) {
-			case ShapeType.OVAL:
-				switch (cardInfo.fill) {
-					case FillType.TRANSPARENT:
-						fileUrl += `${color}-${cardInfo.fill}-${cardInfo.shape}`;
-
-						 graphic = await draw(cardInfo);
-
-						// graphic = new fabric.Circle({
-						// 	radius: 30,
-						// 	top: 30 + Math.floor(index / 6) * (cardHeight + 20),
-						// 	left: 158 + (index % 6) * (cardWidth + 20),
-						// 	stroke: color,
-						// 	strokeWidth: 5,
-						// 	fill: 'rgba(0,0,0,0)',
-						// 	selectable: true,
-						// });
-						break;
-
-					case FillType.FILLED:
-						graphic = new fabric.Circle({
-							radius: 30,
-							top: 30 + Math.floor(index / 6) * (cardHeight + 20),
-							left: 158 + (index % 6) * (cardWidth + 20),
-							stroke: color,
-							strokeWidth: 5,
-							fill: color,
-							selectable: true,
-						});
-						break;
-
-					case FillType.GRADIENT:
-						graphic = [1, 2, 3].reduce(
-							(pre: any, cur) => {
-								return new fabric.Group([
-									pre,
-									new fabric.Circle({
-										radius: 30 - +cur * 8,
-										top: 30 + Math.floor(index / 6) * (cardHeight + 20) + +cur * 8,
-										left: 158 + (index % 6) * (cardWidth + 20) + +cur * 8,
-										stroke: color,
-										strokeWidth: 5,
-										fill: 'rgba(0,0,0,0)',
-										selectable: true,
-									}),
-								]);
-							},
-							new fabric.Circle({
-								radius: 30,
-								top: 30 + Math.floor(index / 6) * (cardHeight + 20),
-								left: 158 + (index % 6) * (cardWidth + 20),
-								stroke: color,
-								strokeWidth: 5,
-								fill: 'rgba(0,0,0,0)',
-								selectable: true,
-							}),
-						);
-
-						break;
-				}
-
-				break;
-			case ShapeType.WAVE:
-				switch (cardInfo.fill) {
-					case FillType.TRANSPARENT:
-						graphic = new fabric.Triangle({
-							width: 60,
-							height: 60,
-							angle: 0,
-							top: 25 + Math.floor(index / 6) * (cardHeight + 20),
-							left: 158 + (index % 6) * (cardWidth + 20),
-							stroke: color,
-							strokeWidth: 5,
-							fill: 'rgba(0,0,0,0)',
-							selectable: true,
-						});
-						break;
-
-					case FillType.FILLED:
-						graphic = new fabric.Triangle({
-							width: 60,
-							height: 60,
-							angle: 0,
-							top: 25 + Math.floor(index / 6) * (cardHeight + 20),
-							left: 158 + (index % 6) * (cardWidth + 20),
-							stroke: color,
-							strokeWidth: 5,
-							fill: color,
-							selectable: true,
-						});
-						break;
-
-					case FillType.GRADIENT:
-						graphic = [1, 2, 3, 4].reduce(
-							(pre: any, cur) => {
-								const unit = +cur * 5;
-								return new fabric.Group([
-									pre,
-									new fabric.Triangle({
-										width: 60 - unit * 2,
-										height: 60 - unit * 2,
-										angle: 0,
-										top: 25 + Math.floor(index / 6) * (cardHeight + 20) + unit * 2,
-										left: 158 + (index % 6) * (cardWidth + 20) + unit * 2,
-										stroke: color,
-										strokeWidth: 5,
-										fill: 'rgba(0,0,0,0)',
-										selectable: true,
-									}),
-								]);
-							},
-							new fabric.Triangle({
-								width: 60,
-								height: 60,
-								angle: 0,
-								top: 25 + Math.floor(index / 6) * (cardHeight + 20),
-								left: 158 + (index % 6) * (cardWidth + 20),
-								stroke: color,
-								strokeWidth: 5,
-								fill: 'rgba(0,0,0,0)',
-								selectable: true,
-							}),
-						);
-
-						break;
-				}
-
-				break;
-			case ShapeType.DIAMOND:
-				switch (cardInfo.fill) {
-					case FillType.TRANSPARENT:
-						graphic = new fabric.Rect({
-							width: 60,
-							height: 60,
-							top: 25 + Math.floor(index / 6) * (cardHeight + 20),
-							left: 158 + (index % 6) * (cardWidth + 20),
-							stroke: color,
-							strokeWidth: 5,
-							fill: 'rgba(0,0,0,0)',
-							selectable: true,
-						});
-						break;
-
-					case FillType.FILLED:
-						graphic = new fabric.Rect({
-							width: 60,
-							height: 60,
-							top: 25 + Math.floor(index / 6) * (cardHeight + 20),
-							left: 158 + (index % 6) * (cardWidth + 20),
-							stroke: color,
-							strokeWidth: 5,
-							fill: color,
-							selectable: true,
-						});
-						break;
-
-					case FillType.GRADIENT:
-						graphic = [1, 2, 3].reduce(
-							(pre: any, cur) => {
-								return new fabric.Group([
-									pre,
-									new fabric.Rect({
-										width: 60 - +cur * 16,
-										height: 60 - +cur * 16,
-										top: 25 + Math.floor(index / 6) * (cardHeight + 20) + +cur * 8,
-										left: 158 + (index % 6) * (cardWidth + 20) + +cur * 8,
-										stroke: color,
-										strokeWidth: 5,
-										fill: 'rgba(0,0,0,0)',
-										selectable: true,
-									}),
-								]);
-							},
-							new fabric.Rect({
-								width: 60,
-								height: 60,
-								top: 25 + Math.floor(index / 6) * (cardHeight + 20),
-								left: 158 + (index % 6) * (cardWidth + 20),
-								stroke: color,
-								strokeWidth: 5,
-								fill: 'rgba(0,0,0,0)',
-								selectable: true,
-							}),
-						);
-
-						break;
-				}
-
-				break;
-		}
-
-		return graphic;
+		return await draw(cardInfo);
 	};
 
 	/**
@@ -442,15 +244,24 @@ const useCanvas = (
 	 * @param index - 索引位置
 	 * @returns
 	 */
-	const drawNumberText = (cardInfo: CardInfo, index: number): fabric.Text => {
-		const textGraphic = new fabric.Text(cardInfo.amount.toString(), {
-			top: 50 + Math.floor(index / 6) * (cardHeight + 20),
-			left: 182 + (index % 6) * (cardWidth + 20),
+	const drawNumberText = (cardInfo: CardInfo, index: number): fabric.Group => {
+		const topTextGraphic = new fabric.Text(cardInfo.amount.toString(), {
+			top: 15 + Math.floor(index / 6) * (cardHeight + 20),
+			left: 160 + (index % 6) * (cardWidth + 20),
 			fontSize: 24,
-			fill: '#dedede',
+			fill: '#000',
 		});
 
-		return textGraphic;
+		const downTextGraphic = new fabric.Text(cardInfo.amount.toString(), {
+			top: 170 + Math.floor(index / 6) * (cardHeight + 20),
+			left: 250 + (index % 6) * (cardWidth + 20),
+			fontSize: 24,
+			fill: '#000',
+		});
+
+		downTextGraphic.rotate(180);
+
+		return new fabric.Group([topTextGraphic, downTextGraphic]);
 	};
 
 	return [

@@ -201,10 +201,8 @@ export const updateCardStatus = createAction(
 		} = getState();
 
 		const foundIndex = cardsOfDeck.findIndex(cardInfo => cardInfo.id === cardId);
-		console.log(cardId);
-		console.log(status);
+
 		if (foundIndex !== -1) {
-			console.log('found', foundIndex);
 			cardsOfDeck[foundIndex] = {
 				...cardsOfDeck[foundIndex],
 				status,
