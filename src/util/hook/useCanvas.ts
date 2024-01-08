@@ -144,11 +144,13 @@ const useCanvas = (
 		const originBorderColor = cardBorder.stroke;
 
 		if (originBorderColor === 'black') {
+			console.log('change to gray');
 			cardBorder.set({
 				stroke: 'gray',
 			});
 			return;
 		}
+		console.log('change to black');
 
 		cardBorder.set({
 			stroke: 'black',
@@ -168,15 +170,23 @@ const useCanvas = (
 	): Promise<fabric.Group> => {
 		const border = drawCardBorder(index);
 		const text = drawNumberText(cardInfo, index);
-		const shape = await drawShape(cardInfo, index);
 
 		// 圖組合併
-		const merge = new fabric.Group([border, shape, text], {
+		const merge = new fabric.Group([border, text], {
 			data: cardInfo,
 			selectable: false,
 			originX: 'center',
 			originY: 'center',
 		});
+
+		console.log(merge)
+		console.log('---------')
+		
+		drawShape(cardInfo, index, (oImg: any) => {
+			merge.addWithUpdate(oImg);
+			fabricRef.current!.renderAll();
+		});
+
 
 		merge.on('mousedown', e => {
 			clickHandler();
@@ -223,18 +233,36 @@ const useCanvas = (
 	 * @param index - 索引位置
 	 * @returns
 	 */
-	const drawShape = async (cardInfo: CardInfo, index: number): Promise<fabric.Object> => {
-		const draw = (info: CardInfo): Promise<fabric.Object> =>
-			new Promise((resolve, reject) => {
-				fabric.Image.fromURL(imgMap[`${info.color}-${info.fill}-${info.shape}`], function (oImg) {
-					oImg.top = 75 + Math.floor(index / 6) * (cardHeight + 20);
-					oImg.left = 165 + (index % 6) * (cardWidth + 20);
-					oImg.scaleX = 0.8;
-					oImg.scaleY = 0.8;
-					resolve(oImg);
-				});
-			});
-		return await draw(cardInfo);
+	const drawShape = (
+		cardInfo: CardInfo, 
+		index: number,
+		handler: any
+	): void => {
+		// const draw = (info: CardInfo): Promise<fabric.Object> =>
+		// 	new Promise((resolve, reject) => {
+		// 		fabric.Image.fromURL(imgMap[`${info.color}-${info.fill}-${info.shape}`], function (oImg) {
+		// 			oImg.top = 75 + Math.floor(index / 6) * (cardHeight + 20);
+		// 			oImg.left = 165 + (index % 6) * (cardWidth + 20);
+		// 			oImg.scaleX = 0.8;
+		// 			oImg.scaleY = 0.8;
+		// 			resolve(oImg);
+		// 		});
+		// 	});
+		
+		// const graphic = await draw(cardInfo);
+		// console.log(graphic)
+		// return graphic;
+
+		fabric.Image.fromURL(imgMap[`${cardInfo.color}-${cardInfo.fill}-${cardInfo.shape}`], function (oImg) {
+			oImg.top = 75 + Math.floor(index / 6) * (cardHeight + 20);
+			oImg.left = 165 + (index % 6) * (cardWidth + 20);
+			oImg.scaleX = 0.8;
+			oImg.scaleY = 0.8;
+			handler(oImg);
+		});
+
+
+
 	};
 
 	/**
