@@ -62,7 +62,6 @@ export interface State {
 	 * @memberof State
 	 */
 	currentPlayerId: string;
-
 }
 
 export const defaultState: State = {
@@ -71,7 +70,7 @@ export const defaultState: State = {
 	scoredCards: [],
 	isSelectedEnoughCards: false,
 	isGameOver: false,
-	currentPlayerId: ''
+	currentPlayerId: '',
 };
 
 /**
@@ -201,9 +200,7 @@ export const updateCardStatus = createAction(
 		} = getState();
 
 		const foundIndex = cardsOfDeck.findIndex(cardInfo => cardInfo.id === cardId);
-		console.log('foundIndex', foundIndex)
-		console.log('cardId', cardId)
-		console.log('status', status)
+
 		if (foundIndex !== -1) {
 			cardsOfDeck[foundIndex] = {
 				...cardsOfDeck[foundIndex],
@@ -310,7 +307,7 @@ const endGame = createAction(
 	'END_GAME',
 	(navigation: NavigateFunction) => (_: Dispatch, getState: () => GlobalState) => {
 		const {
-			game: { isGameOver }
+			game: { isGameOver },
 		} = getState();
 
 		if (isGameOver) {
@@ -319,10 +316,7 @@ const endGame = createAction(
 	},
 );
 
-const setCurrentPlayerId = createAction(
-	'SET_CURRENT_PLAYER_ID', 
-	(id: string) => id
-)
+const setCurrentPlayerId = createAction('SET_CURRENT_PLAYER_ID', (id: string) => id);
 export const reducer = {
 	game: handleActions<State, any>(
 		{
@@ -353,8 +347,8 @@ export const reducer = {
 			}),
 			SET_CURRENT_PLAYER_ID: (state: State, action: Action<string>) => ({
 				...state,
-				currentPlayerId: action.payload
-			})
+				currentPlayerId: action.payload,
+			}),
 			// CHOOSE_CORRECT_CARD: (state: State, action: Action<Partial<State>>) => ({
 			// 	...state,
 			// 	cardsOfDeck: action.payload.cardsOfDeck || [],
