@@ -3,8 +3,8 @@ import { useDispatch } from 'react-redux';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
-import Home from '../pages/Home/Home';
 import Game from '../pages/Game/Game';
+import Home from '../pages/Home/Home';
 import Score from '../pages/Score/Score';
 import GameGuard from './guards/GameGuard';
 
