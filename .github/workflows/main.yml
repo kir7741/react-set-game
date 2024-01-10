@@ -29,8 +29,8 @@ jobs:
 
       - name: Install 🔧
         run: |
-        node -v
-        npm install
+          node -v
+          npm install
 
       - name: Build 🏗️
         run: |
