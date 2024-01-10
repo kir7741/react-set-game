@@ -28,12 +28,14 @@ jobs:
           node-version: '16'
 
       - name: Install 🔧
-        run: npm install
+        run: |
+        node -v
+        npm install
 
       - name: Build 🏗️
         run: |
-          node -v
-          echoinfo "Build ${{env._BRANCH}} aka ${{github.GITHUB_REF_NAME}} branch"
+          echo "branch1 ${{github.ref_name}}"
+          echo "Build ${{env._BRANCH}} aka ${{github.GITHUB_REF_NAME}} branch"
           npm run build:${{env._BRANCH}}
 
       - name: Deploy to GH Pages 🚀
