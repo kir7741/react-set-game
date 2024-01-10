@@ -33,7 +33,7 @@ jobs:
       - name: Build 🏗️
         run: |
           node -v
-          echoinfo "Build ${{env._BRANCH}} aka ${{GITHUB_REF_NAME}} branch"
+          echoinfo "Build ${{env._BRANCH}} aka ${{github.GITHUB_REF_NAME}} branch"
           npm run build:${{env._BRANCH}}
 
       - name: Deploy to GH Pages 🚀
