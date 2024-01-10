@@ -10,7 +10,7 @@ on:
       - production
 
 env:
-  _BRANCH: ${{github.GITHUB_REF_NAME}}
+  _BRANCH: ${{github.ref_name}}
 
 jobs:
   build:
@@ -34,8 +34,7 @@ jobs:
 
       - name: Build 🏗️
         run: |
-          echo "branch1 ${{github.ref_name}}"
-          echo "Build ${{env._BRANCH}} aka ${{github.GITHUB_REF_NAME}} branch"
+          echo "Build ${{env._BRANCH}} aka ${{github.ref_name}} branch"
           npm run build:${{env._BRANCH}}
 
       - name: Deploy to GH Pages 🚀
