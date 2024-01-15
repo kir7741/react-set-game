@@ -42,7 +42,9 @@ const Router: React.FC = () => {
 			path: 'score',
 			element: <Score />,
 		}
-	]);
+	], {
+		basename: process.env.PUBLIC_URL || ''
+	});
 
 	return <RouterProvider router={router} />;
 };
