@@ -7,7 +7,7 @@
     "start:sit": "sh -ac '. .env.sit; react-scripts start'",
     "start:prod": "sh -ac '. .env.production; react-scripts start'",
     "build": "react-scripts build",
-    "build:develop": "react-scripts build",
+    "build:develop": "sh -ac '. .env; react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
